@@ -1,6 +1,5 @@
 from django.db import models
-from django.utils import timezone
-from django.contrib.postgres.validators import RangeMaxValueValidator, RangeMinValueValidator
+
 
 # 新規テーブル作成　※１クラス＝１テーブルに該当
 class GoodsTBL(models.Model):
@@ -19,12 +18,12 @@ class GoodsTBL(models.Model):
     productno = models.CharField(
         verbose_name = '製品番号',
         max_length = 9,
+        null=False,
     )
     categoryid = models.ForeignKey(
         'CategoryTBL',
         to_field='categoryid',
         on_delete=models.CASCADE,
-        null=True,
         verbose_name = 'カテゴリID'
     )
     sizename = models.CharField(
@@ -41,11 +40,15 @@ class GoodsTBL(models.Model):
     )
     goodsdescription = models.CharField(
         verbose_name = '商品記述',
-        max_length = 150
+        max_length = 150,
+        null=True,
+        blank=True,
     )
     goodsurl = models.URLField(
         verbose_name = '商品画像URL',
         max_length = 100,
+        null=True,
+        blank=True,
     )
     price = models.IntegerField(
         verbose_name = '価格',
@@ -58,12 +61,18 @@ class GoodsTBL(models.Model):
     )
     salesenddate = models.DateField(
         verbose_name = '販売終了年月日',
+        null=True,
+        blank=True,
     )
     entrydate = models.DateTimeField(
         verbose_name = '登録年月日時分秒',
+        null=True,
+        blank=True,
     )
     updatedate = models.DateTimeField(
         verbose_name = '更新年月日時分秒',
+        null=True,
+        blank=True,
     )
     deleteflag = models.IntegerField(
         verbose_name = '論理削除フラグ',
@@ -90,7 +99,7 @@ class CategoryTBL(models.Model):
         'HighCategoryTBL',
         to_field='highcategoryid',
         on_delete=models.CASCADE,
-        null=True,
+        null=False,
         verbose_name = '上位カテゴリID',
     )
     categoryname = models.CharField(
