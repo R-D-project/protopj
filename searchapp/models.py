@@ -16,12 +16,16 @@ class GoodsTBL(models.Model):
         primary_key=True,
         max_length = 13,
     )
+    productno = models.CharField(
+        verbose_name = '製品番号',
+        max_length = 9,
+    )
     categoryid = models.ForeignKey(
         'CategoryTBL',
         to_field='categoryid',
         on_delete=models.CASCADE,
         null=True,
-        verbose_name = 'カテゴリ名'
+        verbose_name = 'カテゴリID'
     )
     sizename = models.CharField(
         verbose_name = 'サイズ',
@@ -87,6 +91,7 @@ class CategoryTBL(models.Model):
         to_field='highcategoryid',
         on_delete=models.CASCADE,
         null=True,
+        verbose_name = '上位カテゴリID',
     )
     categoryname = models.CharField(
         verbose_name = 'カテゴリ名',
@@ -95,7 +100,7 @@ class CategoryTBL(models.Model):
 
     # 管理サイトに表示させる文字列を定義
     def __str__(self):
-        return self.categoryname
+        return self.categoryid
 
 
 class HighCategoryTBL(models.Model):
@@ -116,4 +121,4 @@ class HighCategoryTBL(models.Model):
 
     # 管理サイトに表示させる文字列を定義
     def __str__(self):
-        return self.highcategoryname
+        return self.highcategoryid
