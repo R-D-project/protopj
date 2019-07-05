@@ -1,0 +1,63 @@
+{% extends 'searchapp/base.html' %}
+
+{% block content %}
+<div class ="container">
+  <div class = "align-self-center">
+
+            <table class="bg-white table table-bordered " >
+                <thead class="thead-dark">
+                <tr>
+                    <th>上位カテゴリ名</th>
+                    <td>スカート</td>
+                </tr>
+                <tr>
+                    <th>カテゴリ名</th>
+                    <td>ロングスカート</td>
+                </tr>
+                <tr>
+                    <th>商品名</th>
+                    <td>ティアードワンピース</td>
+                </tr>
+                <tr>
+                    <th>価格（￥）※税抜き</th>
+                    <td align="right">1990</td>
+                </tr>
+                <tr>
+                    <th>サイズ</th>
+                    <td class="dropdown">
+                      <button class="btn-light dropdown-toggle"
+                      type="button" id="dropdownMenu1" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      サイズをお選びください
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                      <a class="dropdown-item" href="#!">サイズをお選びください</a>
+                      <a class="dropdown-item" href="#!">S</a>
+                      <a class="dropdown-item" href="#!">M</a>
+                      </div>
+                </tr>
+                <tr>
+                    <th>色</th>
+                    <td class="dropdown">
+                      <button class="btn-light dropdown-toggle"
+                      type="button" id="dropdownMenu1" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      色をお選びください
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                      <a class="dropdown-item" value="色をお選びください" href="#!">色をお選びください</a>
+                      <a class="dropdown-item" value="赤" href="#!">赤</a>
+                      <a class="dropdown-item" value="青" href="#!">青</a>
+                      <a class="dropdown-item" value="黄色" href="#!">黄色</a>
+                      </div>
+                </tr>
+                <tr>
+                    <th>在庫有無</th>
+                    <td>－</td>
+                </tr>
+                </thead>
+            </table>
+  </div>
+</div>
+
+{% endblock %}

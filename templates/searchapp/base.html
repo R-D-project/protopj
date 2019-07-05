@@ -1,0 +1,44 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- bootstrap4の呼び出し -->
+        {% load bootstrap4 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript jquery='full' %}
+        <!-- bootstrap4 -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
+        <script type="text/javascript">
+            $(function() {
+                var topBtn = $('#page-top');
+                topBtn.hide();
+                //スクロールが500に達したらボタン表示
+                $(window).scroll(function () {
+                    if ($(this).scrollTop() > 500) {
+                        topBtn.fadeIn();
+                    } else {
+                        topBtn.fadeOut();
+                    }
+                });
+                //スクロールしてトップ
+                topBtn.click(function () {
+                    $('body,html').animate({
+                        scrollTop: 0
+                    }, 500);
+                    return false;
+                });
+            });
+        </script>
+        <title>{% block title %}Search details{% endblock %}</title>
+    </head>
+    <body>
+         <main>
+         	<!-- オーバーライド対象：content=子テンプレートのブロック名 -->
+            {% block content %}
+            {% endblock %}
+        </main>
+    </body>
+</html>
