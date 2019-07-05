@@ -1,20 +1,109 @@
+from django.db.models import Q
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.views import generic
-from django.db.models import Q
+from django.views.generic.base import TemplateView
+from .models import CategoryTBL
 from .models import GoodsTBL
 from .models import HighCategoryTBL
-from django.views.generic.base import TemplateView
 
 
 # Create your views here.
+class Searchscreen(TemplateView):
 
-class IndexView(generic.ListView):
+    # modelは取り扱うモデルクラス(モデル名と紐づけ)
+    model = GoodsTBL
+    # template_nameは利用するテンプレート名
+    # (ListViewの場合、何も設定しないとhtml名の最後に[_list]が付く)
+    template_name = 'searchapp/Search.html'
+
+    def post(self, request, *args, **kwargs):
+        """
+        検索フォームに入力された値をセッションに格納するメソッド
+        ⇒初期アクセスでは、検索フォームに入力されていない⇒セッションに格納される処理は呼ばれない
+        ⇒初期アクセスではこのメソッドは呼ばれない
+        """
+        # 検索値を格納するリストを新規作成
+        form_value = [
+                self.request.POST.get('categoryname', None),
+                self.request.POST.get('searchchar', None),
+            ]
+
+        # 検索値を格納するリストをセッションで管理する
+        request.session['form_value'] = form_value
+
+        '''
+        self.request.GET = self.request.GET.copy()
+        self.request.GET.clear()
+        '''
+
+        # generic/list.pyのget()メソッドが呼び出される
+        return self.get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        """
+         初期値に空白を設定したテンプレートを返すメソッド
+         ⇒最初にサイトを呼び出すときに必ず呼ばれる
+        """
+        # 親クラスのメソッド呼び出し、変数contextに格納
+        context = super().get_context_data(**kwargs)
+
+        searchchar = ''
+        categoryname = ''
+
+        # 最初はセッションに値が無いからこのif節は呼ばれない
+        if 'form_value' in self.request.session:
+            form_value = self.request.session['form_value']
+            title = form_value[0]
+            category = form_value[1]
+            price = form_value[2]
+
+        # 辞書新規作成⇒初期値ではそれぞれ「空白」が設定
+        default_data = {'title' :title, 'category' :category, 'price' :price}
+
+        # 入力フォームに初期値では空白を設定する処理
+        test_form = GoodSearchForm(initial = default_data)
+
+        # 入力フォームに空白を指定したテンプレートを呼び出し、返却する処理
+        context['test_form'] = test_form
+        return context
+
+class ResultList(generic.ListView):
     # modelは取り扱うモデルクラス(モデル名と紐づけ)
     model = GoodsTBL
     # template_nameは利用するテンプレート名
     # (ListViewの場合、何も設定しないとhtml名の最後に[_list]が付く)
     template_name = 'searchapp/post_list.html'
+
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        """
+         初期値に空白を設定したテンプレートを返すメソッド
+         ⇒最初にサイトを呼び出すときに必ず呼ばれる
+        """
+        # 親クラスのメソッド呼び出し、変数contextに格納
+        context = super().get_context_data(**kwargs)
+
+        title = ''
+        category = ''
+        price = ''
+
+        # 最初はセッションに値が無いからこのif節は呼ばれない
+        if 'form_value' in self.request.session:
+            form_value = self.request.session['form_value']
+            title = form_value[0]
+            category = form_value[1]
+            price = form_value[2]
+
+        # 辞書新規作成⇒初期値ではそれぞれ「空白」が設定
+        default_data = {'title' :title, 'category' :category, 'price' :price}
+
+        # 入力フォームに初期値では空白を設定する処理
+        test_form = GoodSearchForm(initial = default_data)
+
+        # 入力フォームに空白を指定したテンプレートを呼び出し、返却する処理
+        context['test_form'] = test_form
+        return context
 
     # 呼び出された（オーバーライドされたメソッド）
     def get_queryset(self):

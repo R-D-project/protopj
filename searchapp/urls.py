@@ -7,7 +7,8 @@ from . import views
 app_name = 'searchapp'
 
 urlpatterns = [
-    path('', views.IndexView.as_view(), name='post_list'),
+    path('',views.SearchScreen.as_view(),name='search'),
+    path('result/<str:pk>/', views.ResultList.as_view(), name='result'),
 #    path('',views.details,name='details'),
 #    path('details/<str:pk>/',views.details_list,name='details'),
     path('details/<str:pk>/', views.DetailsView.as_view(), name='details'),

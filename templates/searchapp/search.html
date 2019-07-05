@@ -1,0 +1,24 @@
+{% extends 'searchapp/base.html' %}
+<!-- オーバーライド対象：content=子テンプレートのブロック名 -->
+
+<!-- テンプレートの継承先 -->
+{% block content %}
+    <form method="POST">
+    	<!-- セキュリティ対策 -->
+        {% csrf_token %}
+        <!-- 入力フォームの表示 -->
+        <!-- test_formの配列数分繰り返す -->
+        {% for field in test_form %}
+            <div class="form-group form-inline">
+            	<!-- field内（formクラス）のlabelで紐づけられたもの -->
+                <label class="col-md-offset-2 col-md-3 control-label">{{ field.label }}:</label>
+                <div class="col-md-8">
+                	<!-- field変数を表示 -->
+                    {{ field }}
+                </div>
+            </div>
+        {% endfor %}
+        <input class="btn btn-success offset-md-8 col-md-3" type="submit" id="button" name="button" value="検索">
+    </form>
+
+{% endblock %}
