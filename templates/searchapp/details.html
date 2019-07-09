@@ -2,77 +2,98 @@
 
 {% block content %}
 <div class ="container">
-  <div class = "align-self-center">
-			<form action="" method="post">{% csrf_token %}
+    <div class = "align-self-center">
+    <!-- 詳細ページが存在しない場合(商品情報削除と詳細ページ表示が同タイミングで発生) -->
+    {% if goods_form|length == 0 %}
+        <p>検索結果が存在しません。</p>
+    <!-- 詳細ページが存在する場合 -->
+    {% else %}
+        <form action="" method="post">{% csrf_token %}
             <table class="bg-white table table-bordered " >
                 <thead class="thead-dark">
                 {% for form in goods_form %}
-                <tr>
-                    <th>上位カテゴリ名</th>
-                    <td>{{ form.categoryid.highcategoryid.highcategoryname }}</td>
-                </tr>
-                <tr>
-                    <th>カテゴリ名</th>
-                    <td>{{ form.categoryid.categoryname }}</td>
-                </tr>
-                <tr>
-                    <th>商品名</th>
-                    <td>{{ form.goodsname }}</td>
-                </tr>
-                <tr>
-                    <th>価格（￥）※税抜き</th>
-                    <td align="right">{{ form.price }}</td>
-                </tr>
-                <tr>
-                    <th>サイズ</th>
-                    <td class="dropdown">
-                      <button class="btn-light dropdown-toggle"
-                      type="button" id="dropdownMenu1" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false">
-                      サイズをお選びください
-                      </button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                      <a class="dropdown-item" href="#!">サイズをお選びください</a>
-                      <a class="dropdown-item" href="#S">S</a>
-                      <a class="dropdown-item" href='#M'>M</a>
-                      </div>
-                </tr>
-                <tr>
-                    <th>色</th>
-                    <td class="dropdown">
-                      <button class="btn-light dropdown-toggle"
-                      type="button" id="dropdownMenu1" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false">
-                      色をお選びください
-                      </button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                      <a class="dropdown-item" value="色をお選びください" href="#!">色をお選びください</a>
-                      <a class="dropdown-item" value="赤" href="#!">赤</a>
-                      <a class="dropdown-item" value="青" href="#!">青</a>
-                      <a class="dropdown-item" value="黄色" href="#!">黄色</a>
-                      </div>
-                </tr>
-                <tr>
-                    <th>在庫有無</th>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <th>サイズの種類(重複削除)</th>
-                    {% for sform in size_form %}
-                    <td>{{ sform.sizename }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>色の種類(重複削除)</th>
-                    {% for cform in color_form %}
-                    <td>{{ cform.colorname }}</td>
-                    {% endfor %}
-                </tr>
+                    <tr>
+                        <th>上位カテゴリ名</th>
+                            <td>{{ form.categoryid.highcategoryid.highcategoryname }}</td>
+                    </tr>
+                    <tr>
+                        <th>カテゴリ名</th>
+                            <td>{{ form.categoryid.categoryname }}</td>
+                    </tr>
+                    <tr>
+                        <th>商品名</th>
+                            <td>{{ form.goodsname }}</td>
+                    </tr>
+                    <tr>
+                        <th>価格（￥）※税抜き</th>
+                            <td align="right">{{ form.price }}</td>
+                    </tr>
+                    <tr>
+                        <th>サイズ</th>
+                            <td class="dropdown">
+                                <button class="btn-light dropdown-toggle"
+                                    type="button" id="dropdownMenu1" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    サイズをお選びください
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    <a class="dropdown-item" href="#!">サイズをお選びください</a>
+                                    <a class="dropdown-item" href="#S">S</a>
+                                    <a class="dropdown-item" href='#M'>M</a>
+                                </div>
+                            </td>
+                    </tr>
+                    <tr>
+                        <th>色</th>
+                            <td class="dropdown">
+                                <button class="btn-light dropdown-toggle"
+                                    type="button" id="dropdownMenu1" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    色をお選びください
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    <a class="dropdown-item" value="色をお選びください" href="#!">色をお選びください</a>
+                                    <a class="dropdown-item" value="赤" href="#!">赤</a>
+                                    <a class="dropdown-item" value="青" href="#!">青</a>
+                                    <a class="dropdown-item" value="黄色" href="#!">黄色</a>
+                                </div>
+                            </td>
+                    </tr>
+                    <tr>
+                        <th>在庫有無</th>
+                            <td>-</td>
+                    </tr>
+                    <tr>
+                        <th>サイズの種類(重複削除)</th>
+                        {% for sform in size_form %}
+                            <td>{{ sform.sizename }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>色の種類(重複削除)</th>
+                        {% for cform in color_form %}
+                            <td>{{ cform.colorname }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>サイズの種類(重複削除)</th>
+                            <td>
+                                <form>
+                                    <select>
+                                        {% for cform in size_form %}
+                                        <option>
+                                        {{ cform.sizename }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </td>
+                    </tr>
                 {% endfor %}
-              </thead>
+                </thead>
             </table>
-            </form>
-
-  </div>
-
+        </form>
+    {% endif %}
+    </div>
+</div>
 {% endblock %}

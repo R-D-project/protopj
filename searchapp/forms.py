@@ -38,13 +38,14 @@ class GoodListForm(forms.Form):
     size = forms.ChoiceField(
             initial = '',
             label = 'サイズ',
-            required = False,
+            disabled=False,
             widget=forms.Select(attrs={
                'id': 'size',}),
         )
     color = forms.ChoiceField(
             initial = '',
             label = '色',
+            disabled = False,
             required = False,
         )
     goodsstocks = forms.IntegerField(
@@ -57,3 +58,20 @@ class GoodListForm(forms.Form):
         super(GoodListForm,self).__init__(*args,**kwargs)
         if queryset :
             self.fields['size'].queryset = queryset
+
+class SizeForm(forms.Form):
+    size = forms.ChoiceField(
+        initial = '',
+        label = 'サイズ',
+        disabled=False,
+        widget=forms.Select(attrs={
+            'id': 'size',}),
+    )
+
+class ColorForm(forms.Form):
+    color = forms.ChoiceField(
+            initial = '',
+            label = '色',
+            disabled = False,
+            required = False,
+        )

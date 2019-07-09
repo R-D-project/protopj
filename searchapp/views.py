@@ -3,12 +3,13 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.views.generic.base import TemplateView
+from .forms import GoodSearchForm
+from .forms import GoodListForm
+from .forms import SizeForm
+from .forms import ColorForm
 from .models import CategoryTBL
 from .models import GoodsTBL
 from .models import HighCategoryTBL
-from .forms import GoodSearchForm
-from .forms import GoodListForm
-
 
 
 # Create your views here.
@@ -153,6 +154,7 @@ class DetailsView(TemplateView):
 class details_ListView(generic.ListView):
     template_name = 'searchapp/details.html'
     # modelは取り扱うモデルクラス(モデル名と紐づけ)
+    #model = モデル名を定義すると「モデル名.objects.all()」を裏で定義してくれる(ListViewの特徴)
     model = GoodsTBL
     context_object_name = 'goodsdetails'
 
@@ -169,17 +171,19 @@ class details_ListView(generic.ListView):
         '''
         goodsid = 'AABBCC001S003'
         productno = goodsid[:9]
-        deleteflag = 1
+        deleteflag = 0 # 有効状態
 
+        # Qオブジェクトの初期設定(インスタンス化)
         exact_goodsid = Q() # 商品IDのQオブジェクト(完全一致)
         exact_productno = Q() # 製造番号のQオブジェクト(完全一致)
         exact_deleteflag = Q() # 論理削除フラグのQオブジェクト(完全一致)
 
+        #インスタンス化した変数にQオブジェクト(検索条件)を記述
         exact_goodsid = Q(goodsid__exact = str(goodsid)) # 条件：商品ID='AABBCC001S003'
         exact_productno = Q(productno__exact = str(productno)) # 条件：製造番号='AABBCC001'
         exact_deleteflag = Q(deleteflag__exact = int(deleteflag))  # 条件：論理削除フラグ = 1
 
-
+        # Qオブジェクトで定義した検索条件でクエリを発行する。
         szdist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('sizename').order_by('-sizename').distinct()
         cldist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('colorname').order_by('-colorname').distinct()
         goodsdetail = GoodsTBL.objects.select_related().filter(exact_goodsid & exact_deleteflag)
@@ -188,10 +192,13 @@ class details_ListView(generic.ListView):
         print(goodsdetail)
         print(szdist)
         print(cldist)
+
+        # contextにクエリ発行した結果を追加し、テンプレートタグで使用可能にする。
         context['size_form'] = szdist
         context['color_form'] = cldist
         context['goods_form'] = goodsdetail
 
+        # 戻り値としてcontextを返す。
         return context
 
 
@@ -211,11 +218,11 @@ class details_ListView(generic.ListView):
 
         goodsid = 'AABBCC001S003'
         productno = goodsid[:9]
-        deleteflag = 1
+        deleteflag = 0 # 有効状態
         '''
         ■DB検索条件(and)
         製品番号 = 'AABBCC001'
-        論理削除フラグ = 1
+        論理削除フラグ = 0
         販売開始年月日 < 現在時間(now)
         販売終了年月日 > 現在時間(now)
         '''
@@ -229,7 +236,7 @@ class details_ListView(generic.ListView):
 
 
 
-            # クエリを発行
+        # クエリを発行
         exact_goodsid = Q(goodsid__exact = str(goodsid)) # 条件：商品ID='AABBCC001S003'
         condition_goodsid = Q(goodsid__contains = str(productno)) # 条件：商品IDに'AABBCC001'が含まれている
         exact_productno = Q(productno__exact = str(productno)) # 条件：製造番号='AABBCC001'
@@ -261,3 +268,16 @@ class details_ListView(generic.ListView):
         else:
             return Good.objects.none() # 何も返さない
         '''
+
+class details_detailView(generic.DetailView):
+    template_name = 'searchapp/details.html'
+    # modelは取り扱うモデルクラス(モデル名と紐づけ)
+    #model = モデル名を定義すると「モデル名.objects.all()」を裏で定義してくれる(DetailViewの特徴)
+    model = GoodsTBL
+    # 内部では、このquerysetに対して「pk」を使って「.filter(pk=pk)」のようなことを行っています。
+    queryset = GoodsTBL.objects.all()
+    # urls.pyで使用する[pk]という文字列を変える。(urls.pyも変えた文字列で定義すること)
+    # id=製造番号とする。（仮決め）
+    pk_url_kwarg = 'id'
+
+

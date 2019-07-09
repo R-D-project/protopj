@@ -13,5 +13,5 @@ urlpatterns = [
 #    path('result/<str:srh>/', views.ResultList.as_view(), name='result'),
 #    path('',views.details,name='details'),
 #    path('details/<str:pk>/',views.details_list,name='details'),
-#    path('details/<str:pk>/', views.DetailsView.as_view(), name='details'),
+#    path('details/<str:id>/', views.Details_detailView.as_view(), name='details'),
 ]
