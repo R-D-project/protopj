@@ -54,7 +54,19 @@
                 </tr>
                 <tr>
                     <th>在庫有無</th>
-                    <td>－</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <th>サイズの種類(重複削除)</th>
+                    {% for sform in size_form %}
+                    <td>{{ sform.sizename }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>色の種類(重複削除)</th>
+                    {% for cform in color_form %}
+                    <td>{{ cform.colorname }}</td>
+                    {% endfor %}
                 </tr>
                 {% endfor %}
               </thead>

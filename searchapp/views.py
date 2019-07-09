@@ -158,8 +158,35 @@ class details_testView(generic.ListView):
 
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        # 親クラスのメソッド呼び出し、変数contextに格納
+        context = super().get_context_data(**kwargs)
+        '''
+        ■DB検索条件(and)
+        製品番号 = 'AABBCC001'
+        論理削除フラグ = 1
+        販売開始年月日 < 現在時間(now)
+        販売終了年月日 > 現在時間(now)
+        '''
+        goodsid = 'AABBCC001S003'
+        productno = goodsid[:9]
+        deleteflag = 1
 
-        return generic.ListView.get_context_data(self, **kwargs)
+        exact_productno = Q(productno__exact = str(productno))
+        exact_deleteflag = Q(deleteflag__exact = int(deleteflag))
+
+
+        szdist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('sizename').order_by('-sizename').distinct()
+        cldist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('colorname').order_by('-colorname').distinct()
+
+        print(productno)
+        print(szdist)
+        print(cldist)
+        context['size_form'] = szdist
+        context['color_form'] = cldist
+
+        return context
+
+
     def get_queryset(self): # 呼び出された（オーバーライドされたメソッド）
         '''
         詳細画面に表示する商品を検索する。
@@ -173,7 +200,18 @@ class details_testView(generic.ListView):
             category = form_value[1]
             price = form_value[2]
         '''
-            #Qオブジェクトを各変数にインスタンス化
+
+        goodsid = 'AABBCC001S003'
+        productno = goodsid[9:]
+        deleteflag = 1
+        '''
+        ■DB検索条件(and)
+        製品番号 = 'AABBCC001'
+        論理削除フラグ = 1
+        販売開始年月日 < 現在時間(now)
+        販売終了年月日 > 現在時間(now)
+        '''
+        #Qオブジェクトを各変数にインスタンス化
         condition_goodsid = Q() #商品IDのQオブジェクト(含め)
         exact_goodsid = Q() # 商品IDのQオブジェクト(完全一致)
         exact_productno = Q() # 製造番号のQオブジェクト(完全一致)
@@ -184,10 +222,10 @@ class details_testView(generic.ListView):
 
 
             # クエリを発行
-        exact_goodsid = Q(goodsid__exact = 'AABBCC001S003') # 条件：商品ID='AABBCC001S003'
-        condition_goodsid = Q(goodsid__contains = 'AABBCC001') # 条件：商品IDに'AABBCC001'が含まれている
-        exact_productno = Q(productno__exact = 'AABBCC001') # 条件：製造番号='AABBCC001'
-        exact_deleteflag = Q(deleteflag__exact = 1) # 条件：論理削除フラグ = 1
+        exact_goodsid = Q(goodsid__exact = str(goodsid)) # 条件：商品ID='AABBCC001S003'
+        condition_goodsid = Q(goodsid__contains = str(productno)) # 条件：商品IDに'AABBCC001'が含まれている
+        exact_productno = Q(productno__exact = str(productno)) # 条件：製造番号='AABBCC001'
+        exact_deleteflag = Q(deleteflag__exact = deleteflag) # 条件：論理削除フラグ = 1
 
             # 入力フォームに値が入っているかの判定
             # 変数の長さが1以上で、null値ではない場合、クエリを発行する。
