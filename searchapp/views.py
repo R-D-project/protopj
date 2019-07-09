@@ -150,7 +150,7 @@ class DetailsView(TemplateView):
         posts = pk
         return render(request,'searchapp/details.html',{'posts':posts})
 
-class details_testView(generic.ListView):
+class details_ListView(generic.ListView):
     template_name = 'searchapp/details.html'
     # modelは取り扱うモデルクラス(モデル名と紐づけ)
     model = GoodsTBL
@@ -171,18 +171,26 @@ class details_testView(generic.ListView):
         productno = goodsid[:9]
         deleteflag = 1
 
-        exact_productno = Q(productno__exact = str(productno))
-        exact_deleteflag = Q(deleteflag__exact = int(deleteflag))
+        exact_goodsid = Q() # 商品IDのQオブジェクト(完全一致)
+        exact_productno = Q() # 製造番号のQオブジェクト(完全一致)
+        exact_deleteflag = Q() # 論理削除フラグのQオブジェクト(完全一致)
+
+        exact_goodsid = Q(goodsid__exact = str(goodsid)) # 条件：商品ID='AABBCC001S003'
+        exact_productno = Q(productno__exact = str(productno)) # 条件：製造番号='AABBCC001'
+        exact_deleteflag = Q(deleteflag__exact = int(deleteflag))  # 条件：論理削除フラグ = 1
 
 
         szdist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('sizename').order_by('-sizename').distinct()
         cldist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('colorname').order_by('-colorname').distinct()
+        goodsdetail = GoodsTBL.objects.select_related().filter(exact_goodsid & exact_deleteflag)
 
         print(productno)
+        print(goodsdetail)
         print(szdist)
         print(cldist)
         context['size_form'] = szdist
         context['color_form'] = cldist
+        context['goods_form'] = goodsdetail
 
         return context
 
@@ -202,7 +210,7 @@ class details_testView(generic.ListView):
         '''
 
         goodsid = 'AABBCC001S003'
-        productno = goodsid[9:]
+        productno = goodsid[:9]
         deleteflag = 1
         '''
         ■DB検索条件(and)
