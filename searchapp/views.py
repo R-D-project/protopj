@@ -188,11 +188,12 @@ class details_ListView(generic.ListView):
         cldist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('colorname').order_by('-colorname').distinct()
         goodsdetail = GoodsTBL.objects.select_related().filter(exact_goodsid & exact_deleteflag)
 
+        '''
         print(productno)
         print(goodsdetail)
         print(szdist)
         print(cldist)
-
+        '''
         # contextにクエリ発行した結果を追加し、テンプレートタグで使用可能にする。
         context['size_form'] = szdist
         context['color_form'] = cldist
@@ -268,6 +269,15 @@ class details_ListView(generic.ListView):
         else:
             return Good.objects.none() # 何も返さない
         '''
+
+    def post(self, request, *args, **kwargs):
+        print (request.post)
+        if request.method == 'post':
+            form = sizeform(request.post)
+        else:
+            form = sizeform()
+
+        return render(request,'',{'form': form})
 
 class details_detailView(generic.DetailView):
     template_name = 'searchapp/details.html'

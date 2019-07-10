@@ -1,14 +1,14 @@
 {% extends 'searchapp/base.html' %}
 
 {% block content %}
-<div class ="container">
-    <div class = "align-self-center">
+<div class ="container" >
+    <q style  ="align: center">
     <!-- 詳細ページが存在しない場合(商品情報削除と詳細ページ表示が同タイミングで発生) -->
     {% if goods_form|length == 0 %}
         <p>検索結果が存在しません。</p>
     <!-- 詳細ページが存在する場合 -->
     {% else %}
-        <form action="" method="post">{% csrf_token %}
+
             <table class="bg-white table table-bordered " >
                 <thead class="thead-dark">
                 {% for form in goods_form %}
@@ -30,70 +30,55 @@
                     </tr>
                     <tr>
                         <th>サイズ</th>
-                            <td class="dropdown">
-                                <button class="btn-light dropdown-toggle"
-                                    type="button" id="dropdownMenu1" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    サイズをお選びください
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                    <a class="dropdown-item" href="#!">サイズをお選びください</a>
-                                    <a class="dropdown-item" href="#S">S</a>
-                                    <a class="dropdown-item" href='#M'>M</a>
-                                </div>
-                            </td>
-                    </tr>
-                    <tr>
-                        <th>色</th>
-                            <td class="dropdown">
-                                <button class="btn-light dropdown-toggle"
-                                    type="button" id="dropdownMenu1" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    色をお選びください
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                    <a class="dropdown-item" value="色をお選びください" href="#!">色をお選びください</a>
-                                    <a class="dropdown-item" value="赤" href="#!">赤</a>
-                                    <a class="dropdown-item" value="青" href="#!">青</a>
-                                    <a class="dropdown-item" value="黄色" href="#!">黄色</a>
-                                </div>
-                            </td>
-                    </tr>
-                    <tr>
-                        <th>在庫有無</th>
-                            <td>-</td>
-                    </tr>
-                    <tr>
-                        <th>サイズの種類(重複削除)</th>
-                        {% for sform in size_form %}
-                            <td>{{ sform.sizename }}</td>
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        <th>色の種類(重複削除)</th>
-                        {% for cform in color_form %}
-                            <td>{{ cform.colorname }}</td>
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        <th>サイズの種類(重複削除)</th>
                             <td>
-                                <form>
-                                    <select>
-                                        {% for cform in size_form %}
+
+                                <form action="" method="post">{% csrf_token %}
+                                    <select name="size">
+                                        <option>サイズをお選びください</option>
+                                        {% for sform in size_form %}
                                         <option>
-                                        {{ cform.sizename }}
+                                        {{ sform.sizename }}
                                         </option>
                                         {% endfor %}
                                     </select>
                                 </form>
                             </td>
                     </tr>
+                    <tr>
+                        <th>色</th>
+                            <td>
+                                <form action="" method="post">{% csrf_token %}
+                                    <select name="color" onChenge="submit">
+                                        <option value ="syoki">色をお選びください</option>
+                                        {% for cform in color_form %}
+                                        <option id = "cform{{ forloop.counter }}" value ="cform.colorname">
+                                        {{ cform.colorname }}
+                                        </option>
+                                        {% endfor %}
+                                        <option value ="ao">青仮</option>
+                                    </select>
+                                </form>
+                            </td>
+                    </tr>
+                    <tr>
+                        <th>在庫有無</th>
+                            <td>
+                            var 
+                            </td>
+                    </tr>
+                    <tr>
+                        <th>お試し</th>
+                            <td>
+                            {% if "syoki" == "syoki" %}
+                            赤
+                            {% endif %}
+                            </td>
+                    </tr>
                 {% endfor %}
                 </thead>
             </table>
-        </form>
+
     {% endif %}
-    </div>
+    </q>
 </div>
 {% endblock %}

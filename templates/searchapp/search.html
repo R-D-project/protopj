@@ -23,6 +23,22 @@
         {% endfor %}
         <input class="btn btn-success offset-md-8 col-md-3" type="submit" id="button" name="srh_button" value="検索">
     </form>
-
+<table class="table table-hover table-bordered">
+                <tr>
+                    <th>商品名</th>
+                    <th>カテゴリー</th>
+                    <th>価格</th>
+                </tr>
+                <tbody>
+                <!-- object_listの配列数分繰り返す -->
+                {% for post in object_list %}
+                    <tr>
+                        <!-- post内（formクラス）のtitle,priceで紐づけられたもの -->
+                        <td width="40%">{{ post.title }}</td>
+                        <td width="40%">{{ post.category }}</td>
+                        <td width="20%">{{ post.price }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
 
 {% endblock %}
