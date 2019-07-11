@@ -39,6 +39,7 @@ class SearchScreen(generic.FormView):
         request.session['srh_value'] = form_value
 
         # generic/list.pyのget()メソッドが呼び出される
+        # getメソッドの中でget_querysetとget_context_dataを呼び出している。
         return self.get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -158,6 +159,18 @@ class details_ListView(generic.ListView):
     model = GoodsTBL
     context_object_name = 'goodsdetails'
 
+    def post(self, request, *args, **kwargs):
+        print (request.POST)
+        if request.method == 'post':
+            form = 'yes'
+            #sizeform(request.post)
+        else:
+            form = 'no'
+            #form = sizeform()
+
+        #return render(request,'searchapp/details.html',{'form': form})
+        return self.get(request, *args, **kwargs)
+
 
     def get_context_data(self, *, object_list=None, **kwargs):
         # 親クラスのメソッド呼び出し、変数contextに格納
@@ -187,6 +200,24 @@ class details_ListView(generic.ListView):
         szdist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('sizename').order_by('-sizename').distinct()
         cldist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('colorname').order_by('-colorname').distinct()
         goodsdetail = GoodsTBL.objects.select_related().filter(exact_goodsid & exact_deleteflag)
+        pdfull = GoodsTBL.objects.select_related().filter(exact_productno)
+
+
+        hairetu = []
+        a = 0
+        for pddata in pdfull:
+            hairetu.append([pddata.productno,pddata.sizename,pddata.colorname,pddata.goodsstocks])
+            print(hairetu)
+            a += 1
+
+        for bb in range(int(len(hairetu))):
+            print(hairetu[bb])
+
+        '''
+        zaikosc =   GoodsTBL.objects.select_related().filter(exact_goodsid).values('goodsid').get(pk=goodsid)
+        print(zaikosc.get('goodsid'))
+        print(str(zaikosc))
+        '''
 
         '''
         print(productno)
@@ -253,7 +284,6 @@ class details_ListView(generic.ListView):
             if len(price) != 0 and price[0]:
                 condition_price = Q(price__contains = price)
         '''
-
         kekka = GoodsTBL.objects.select_related().filter(exact_goodsid & exact_deleteflag)
         # 定義されたクエリを発行し、データをgoodsdetailsへ格納する。
         return kekka
@@ -270,14 +300,7 @@ class details_ListView(generic.ListView):
             return Good.objects.none() # 何も返さない
         '''
 
-    def post(self, request, *args, **kwargs):
-        print (request.post)
-        if request.method == 'post':
-            form = sizeform(request.post)
-        else:
-            form = sizeform()
 
-        return render(request,'',{'form': form})
 
 class details_detailView(generic.DetailView):
     template_name = 'searchapp/details.html'

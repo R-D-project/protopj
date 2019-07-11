@@ -4,14 +4,14 @@
 <div class ="container" >
     <q style  ="align: center">
     <!-- 詳細ページが存在しない場合(商品情報削除と詳細ページ表示が同タイミングで発生) -->
-    {% if goods_form|length == 0 %}
+    {% if goodsdetails|length == 0 %}
         <p>検索結果が存在しません。</p>
     <!-- 詳細ページが存在する場合 -->
     {% else %}
 
-            <table class="bg-white table table-bordered " >
+            <table class="bg-white table table-bordered">
                 <thead class="thead-dark">
-                {% for form in goods_form %}
+                {% for form in goodsdetails %}
                     <tr>
                         <th>上位カテゴリ名</th>
                             <td>{{ form.categoryid.highcategoryid.highcategoryname }}</td>
@@ -22,7 +22,7 @@
                     </tr>
                     <tr>
                         <th>商品名</th>
-                            <td>{{ form.goodsname }}</td>
+                            <td id = "goodsname">{{ form.goodsname }}</td>
                     </tr>
                     <tr>
                         <th>価格（￥）※税抜き</th>
@@ -32,11 +32,12 @@
                         <th>サイズ</th>
                             <td>
 
-                                <form action="" method="post">{% csrf_token %}
-                                    <select name="size">
-                                        <option>サイズをお選びください</option>
+                                <form action="" method="post" name="sizefm">
+                                    {% csrf_token %}
+                                    <select name="sizeselect" onChange="sizeChange()">
+                                        <option id ="0" value="-">サイズをお選びください</option>
                                         {% for sform in size_form %}
-                                        <option>
+                                        <option id = "{{ forloop.counter}}" value ="{{sform.sizename }}">
                                         {{ sform.sizename }}
                                         </option>
                                         {% endfor %}
@@ -47,31 +48,28 @@
                     <tr>
                         <th>色</th>
                             <td>
-                                <form action="" method="post">{% csrf_token %}
-                                    <select name="color" onChenge="submit">
-                                        <option value ="syoki">色をお選びください</option>
+                                <form action="" method="post" name="colorfm">
+                                    {% csrf_token %}
+                                    <select name="colorselect" onChange="colorChange()">
+                                        <option id = "0" value ="-">色をお選びください</option>
                                         {% for cform in color_form %}
-                                        <option id = "cform{{ forloop.counter }}" value ="cform.colorname">
+                                        <option id = "{{ forloop.counter }}" value ="{{ cform.colorname }}">
                                         {{ cform.colorname }}
                                         </option>
                                         {% endfor %}
-                                        <option value ="ao">青仮</option>
                                     </select>
                                 </form>
                             </td>
                     </tr>
                     <tr>
                         <th>在庫有無</th>
-                            <td>
-                            var 
+                            <td id ="zaiko">
+
                             </td>
                     </tr>
                     <tr>
                         <th>お試し</th>
                             <td>
-                            {% if "syoki" == "syoki" %}
-                            赤
-                            {% endif %}
                             </td>
                     </tr>
                 {% endfor %}
@@ -79,6 +77,7 @@
             </table>
 
     {% endif %}
+
     </q>
 </div>
 {% endblock %}
