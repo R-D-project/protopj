@@ -1,6 +1,16 @@
+function selectChange(){
+	//サイズと色が選択されているかを判定する(if文追加)
+	sizef = document.selectform.sizeselect;
+	sizeindex = sizef.selectedIndex;
+	colorf = document.selectform.colorselect;
+	colorindex = colorf.selectedIndex;
+	if(sizef.options[sizeindex].value != "-" && colorf.options[colorindex].value != "-"){
+		document.selectform.submit();
+	}
+}
 function colorChange(){
 
-	document.colorfm.submit();
+	document.selectfm.submit();
 	//documentとは：webページを構成するhtml要素
 	//document.getElementById：指定したID属性を持つhtml属性を取得する。
 
@@ -21,14 +31,16 @@ function colorChange(){
 
 }
 function sizeChange(){
+
+	document.sizeform.submit();
 	//zaiko_eleにhtml側で定義した"zaiko"idを定義する。
-	var zaiko_ele = document.getElementById('zaiko');
+	//var zaiko_ele = document.getElementById('zaiko');
 	//size_eleにhtml側で定義したフォーム(sizefm)のプルダウン(sizeselect)を定義する。
-	var size_ele = document.sizefm.sizeselect;
+	//var size_ele = document.sizefm.sizeselect;
 	//size_indexにプルダウン(size_ele)で選択されている項目(selectedIndex)を定義する。
-	var size_index = size_ele.selectedIndex;
+	//var size_index = size_ele.selectedIndex;
 
 	//zaiko_ele(今回は"zaiko"id)にプルダウン(size_ele)のオプションで現在定義(size_index)されている値(value)を出力する。
-	zaiko_ele.innerHTML = size_ele.options[size_index].value;
+	//zaiko_ele.innerHTML = size_ele.options[size_index].value;
 }
 

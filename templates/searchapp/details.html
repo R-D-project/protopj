@@ -8,13 +8,12 @@
         <p>検索結果が存在しません。</p>
     <!-- 詳細ページが存在する場合 -->
     {% else %}
-
             <table class="bg-white table table-bordered">
                 <thead class="thead-dark">
                 {% for form in goodsdetails %}
                     <tr>
                         <th>上位カテゴリ名</th>
-                            <td>{{ form.categoryid.highcategoryid.highcategoryname }}</td>
+                        <td>{{ form.categoryid.highcategoryid.highcategoryname }}</td>
                     </tr>
                     <tr>
                         <th>カテゴリ名</th>
@@ -28,13 +27,14 @@
                         <th>価格（￥）※税抜き</th>
                             <td align="right">{{ form.price }}</td>
                     </tr>
-                    <tr>
-                        <th>サイズ</th>
-                            <td>
+                {% endfor %}
+                    <form action = "" method = "POST" name = "selectform">
+                        <tr>
+                            <th>サイズ</th>
 
-                                <form action="" method="post" name="sizefm">
-                                    {% csrf_token %}
-                                    <select name="sizeselect" onChange="sizeChange()">
+                                {% csrf_token %}
+                                <td>
+                                    <select name="sizeselect" onChange="selectChange()">
                                         <option id ="0" value="-">サイズをお選びください</option>
                                         {% for sform in size_form %}
                                         <option id = "{{ forloop.counter}}" value ="{{sform.sizename }}">
@@ -42,40 +42,44 @@
                                         </option>
                                         {% endfor %}
                                     </select>
-                                </form>
-                            </td>
-                    </tr>
+                                </td>
+
+                        </tr>
                     <tr>
                         <th>色</th>
                             <td>
-                                <form action="" method="post" name="colorfm">
-                                    {% csrf_token %}
-                                    <select name="colorselect" onChange="colorChange()">
-                                        <option id = "0" value ="-">色をお選びください</option>
-                                        {% for cform in color_form %}
-                                        <option id = "{{ forloop.counter }}" value ="{{ cform.colorname }}">
-                                        {{ cform.colorname }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
-                                </form>
+                                <select name="colorselect" onChange="selectChange()">
+                                    <option id = "0" value ="-">色をお選びください</option>
+                                    {% for cform in color_form %}
+                                    <option id = "{{ forloop.counter }}" value ="{{ cform.colorname }}">
+                                    {{ cform.colorname }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
                             </td>
                     </tr>
+                    </form>
                     <tr>
                         <th>在庫有無</th>
                             <td id ="zaiko">
-
+                            {% if zaiko_form|length == 0 %}
+                            -
+                            {% else %}
+                                {{ zaiko_form }}
+                            {% endif %}
                             </td>
                     </tr>
                     <tr>
                         <th>お試し</th>
                             <td>
+                            <form action="" method="post" name="btmfm">
+                            {% csrf_token %}
+                            <input class="btn btn-success offset-md-8 col-md-3" type="submit" id="button" name="button" value="検索">
+                            </form>
                             </td>
                     </tr>
-                {% endfor %}
                 </thead>
             </table>
-
     {% endif %}
 
     </q>
