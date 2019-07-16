@@ -72,9 +72,15 @@
                     <tr>
                         <th>お試し</th>
                             <td>
+                                <select>
                                 {% for sa in sss %}
+
+                                <option {{sa}}>
                                 {{ sa }}
+                                </option>
+
                                 {% endfor %}
+                                </select>
                             </td>
                     </tr>
                 </thead>

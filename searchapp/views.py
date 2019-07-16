@@ -170,11 +170,21 @@ class details_ListView(generic.ListView):
     #何も設定しないと、「object_list」で返す。
     context_object_name = 'goodsdetails'
 
+    def index(request):
+        if request.method == 'POST':
+            print('index:POSTメソッド')
+        elif request.method == 'GET':
+            print('index:GETメソッド')
+        else:
+            print('index:？？')
+
+        return self.get(request, *args, **kwargs)
+
 
     def post(self, request, *args, **kwargs):
         if 'sizeselect' in request.POST and 'colorselect' in request.POST:
-            request.session['sizeselect'] = request.POST['sizeselect']
-            request.session['colorselect'] = request.POST['colorselect']
+            request.session['sizeselect'] = self.request.POST.get('sizeselect',None)
+            request.session['colorselect'] = self.request.POST.get('colorselect',None)
         else:
             print('プルダウン以外の処理')
 
@@ -276,6 +286,7 @@ class details_ListView(generic.ListView):
             # 'sizeselect'と'colorselect'がsessionに登録されている
             if 'sizeselect' in self.request.session and 'colorselect' in self.request.session:
                 colorn = self.request.session['colorselect']
+
                 colorID_search(self,colorname=colorn)
                 exact_sizename = Q(sizename__exact = str(self.request.session['sizeselect']))
                 exact_colorname = Q(colorname__exact = str(self.request.session['colorselect']))
@@ -318,8 +329,6 @@ class details_ListView(generic.ListView):
         else:
             print('get_contect_data:GET')
 
-
-
         # Qオブジェクトの初期設定(インスタンス化)
         exact_goodsid = Q() # 商品IDのQオブジェクト(完全一致)
         exact_productno = Q() # 製造番号のQオブジェクト(完全一致)
@@ -335,46 +344,18 @@ class details_ListView(generic.ListView):
         cldist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('colorname').order_by('-colorname').distinct()
         goodsdetail = GoodsTBL.objects.select_related().filter(exact_goodsid & exact_deleteflag)
 
-
         # プルダウンをフォームで管理するための選択列情報取得
-
         size_list = []
-        '初期表示'
         size_list.append(('size','サイズをお選びください'))
-
         for sz in szdist:
             # print(sz['sizename'])
             size_list.append(('size',sz['sizename']))
             # print('sizelist' + str(size_list))
 
         sz_form = SizeForm(size_list)
+
         context['sss'] = sz_form
 
-
-        '''
-        hairetu = []
-        a = 0
-        for pddata in pdfull:
-            hairetu.append([pddata.productno,pddata.sizename,pddata.colorname,pddata.goodsstocks])
-            print(hairetu)
-            a += 1
-
-        for bb in range(int(len(hairetu))):
-            print(hairetu[bb])
-        '''
-
-        '''
-        zaikosc =   GoodsTBL.objects.select_related().filter(exact_goodsid).values('goodsid').get(pk=goodsid)
-        print(zaikosc.get('goodsid'))
-        print(str(zaikosc))
-        '''
-
-        '''
-        print(productno)
-        print(goodsdetail)
-        print(szdist)
-        print(cldist)
-        '''
         # contextにクエリ発行した結果を追加し、テンプレートタグで使用可能にする。
         context['size_form'] = szdist
         context['color_form'] = cldist
@@ -382,10 +363,6 @@ class details_ListView(generic.ListView):
 
         # 戻り値としてcontextを返す。
         return context
-
-
-
-
 
 
 class details_detailView(generic.DetailView):
