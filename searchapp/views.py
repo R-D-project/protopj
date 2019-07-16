@@ -1,6 +1,8 @@
 from django.db.models import Q
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views import generic
 from django.views.generic.base import TemplateView
 from .forms import GoodSearchForm
@@ -10,6 +12,8 @@ from .forms import ColorForm
 from .models import CategoryTBL
 from .models import GoodsTBL
 from .models import HighCategoryTBL
+
+
 
 
 # Create your views here.
@@ -41,6 +45,7 @@ class SearchScreen(generic.FormView):
         # generic/list.pyのget()メソッドが呼び出される
         # getメソッドの中でget_querysetとget_context_dataを呼び出している。
         return self.get(request, *args, **kwargs)
+
 
     def get_context_data(self, **kwargs):
         """
@@ -177,6 +182,8 @@ class details_ListView(generic.ListView):
         # getメソッドの中でget_querysetとget_context_dataを呼び出している。
         return self.get(request, *args, **kwargs)
 
+        # return redirect(reverse('searchapp:details'))
+
         #post処理だけして返す場合
         #return render(request,'searchapp/details.html')
 
@@ -263,27 +270,35 @@ class details_ListView(generic.ListView):
         productno = goodsid[:9]
         deleteflag = 0 # 有効状態
 
+        # クライアント側(HTML側)からPOSTで返ってきたときの処理
         if self.request.method == 'POST':
+            # 在庫数判定の前提条件
+            # 'sizeselect'と'colorselect'がsessionに登録されている
             if 'sizeselect' in self.request.session and 'colorselect' in self.request.session:
-                colorn = self.request.POST['colorselect']
+                colorn = self.request.session['colorselect']
                 colorID_search(self,colorname=colorn)
-                exact_sizename = Q(sizename__exact = str(self.request.POST['sizeselect']))
-                exact_colorname = Q(colorname__exact = str(self.request.POST['colorselect']))
+                exact_sizename = Q(sizename__exact = str(self.request.session['sizeselect']))
+                exact_colorname = Q(colorname__exact = str(self.request.session['colorselect']))
                 exact_productno = Q(productno__exact = str(productno))
                 #zaiko = GoodsTBL.objects.select_related().filter(exact_colorname & exact_sizename & exact_productno).first()
                 #条件に当てはまる数を確認(1件あるかないか)
                 zaikaku = GoodsTBL.objects.select_related().filter(exact_colorname & exact_sizename & exact_productno).count()
-                #結果が1以上なら
+
+                # 対象商品のサイズと色のパターンが存在しているか判定
                 if int(zaikaku) == 0:
-                    zaikoJudg = "-"
+                    # 対象商品のパターンが存在しない場合
+                    zaikoJudg = '-'
+
                 else:
+                    # 対象商品のパターンが存在した場合
+                    # 製造番号、色、サイズで商品を特定する。(プライマリキーでは無いため、内部では1件なのかが分からない
                     zaiko = GoodsTBL.objects.select_related().filter(exact_colorname & exact_sizename & exact_productno)
                     '''
                     プライマリキーを使用して一意検索を掛ければfor文で回さなくても良い
                     zaiko = GoodsTBL.objects.select_related().get(Q(goodsid__exact = str(goodsid)))
                     print(zaiko.goodsstocks)
                     '''
-
+                    # 在庫数を判定し、0か1以上かで'在庫あり','在庫なし'を判定する。
                     for zz in zaiko:
                         print(zz.goodsstocks)
 
@@ -297,11 +312,11 @@ class details_ListView(generic.ListView):
                         print(zaikoJudg)
                         zaikofm = {'goodsstocks' : zaikoJudg}
 
-
+                # テンプレートで使用する変数'zaiko_form'に在庫有無の結果を代入する
                 context['zaiko_form'] = zaikoJudg
 
         else:
-            print('GET')
+            print('get_contect_data:GET')
 
 
 
@@ -320,6 +335,20 @@ class details_ListView(generic.ListView):
         cldist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('colorname').order_by('-colorname').distinct()
         goodsdetail = GoodsTBL.objects.select_related().filter(exact_goodsid & exact_deleteflag)
 
+
+        # プルダウンをフォームで管理するための選択列情報取得
+
+        size_list = []
+        '初期表示'
+        size_list.append(('size','サイズをお選びください'))
+
+        for sz in szdist:
+            # print(sz['sizename'])
+            size_list.append(('size',sz['sizename']))
+            # print('sizelist' + str(size_list))
+
+        sz_form = SizeForm(size_list)
+        context['sss'] = sz_form
 
 
         '''
@@ -379,4 +408,5 @@ def colorID_search(self,colorname=None):
         print(ans)
     else:
         print("色なし")
+
 

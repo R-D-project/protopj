@@ -60,8 +60,13 @@ class GoodListForm(forms.Form):
             self.fields['size'].queryset = queryset
 
 class SizeForm(forms.Form):
+
+    def __init__(self,szchoice,*args,**kwargs):
+        super(SizeForm, self).__init__(*args, **kwargs)
+        self.fields['size'].choices = szchoice
+
     size = forms.ChoiceField(
-        initial = '',
+        choices =(),
         label = 'サイズ',
         disabled=False,
         widget=forms.Select(attrs={

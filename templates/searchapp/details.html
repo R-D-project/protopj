@@ -72,10 +72,9 @@
                     <tr>
                         <th>お試し</th>
                             <td>
-                            <form action="" method="post" name="btmfm">
-                            {% csrf_token %}
-                            <input class="btn btn-success offset-md-8 col-md-3" type="submit" id="button" name="button" value="検索">
-                            </form>
+                                {% for sa in sss %}
+                                {{ sa }}
+                                {% endfor %}
                             </td>
                     </tr>
                 </thead>
