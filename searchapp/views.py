@@ -1,8 +1,6 @@
 from django.db.models import Q
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
-from django.urls import reverse
 from django.views import generic
 from django.views.generic.base import TemplateView
 from .forms import GoodSearchForm
@@ -188,6 +186,10 @@ class details_ListView(generic.ListView):
         else:
             print('プルダウン以外の処理')
 
+        if 'size' in request.POST and 'color' in request.POST:
+            request.session['size'] = self.request.POST.get('size',None)
+            request.session['color'] = self.request.POST.get('color',None)
+
         # generic/list.pyのget()メソッドが呼び出される
         # getメソッドの中でget_querysetとget_context_dataを呼び出している。
         return self.get(request, *args, **kwargs)
@@ -344,17 +346,56 @@ class details_ListView(generic.ListView):
         cldist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('colorname').order_by('-colorname').distinct()
         goodsdetail = GoodsTBL.objects.select_related().filter(exact_goodsid & exact_deleteflag)
 
+
+
+        # プルダウンの項目をフォームに持たせる処理(テスト) Start
+
         # プルダウンをフォームで管理するための選択列情報取得
         size_list = []
-        size_list.append(('size','サイズをお選びください'))
-        for sz in szdist:
-            # print(sz['sizename'])
-            size_list.append(('size',sz['sizename']))
-            # print('sizelist' + str(size_list))
+        color_list = []
+        size_list.append((0,'サイズをお選びください'))
+        color_list.append((0,'色をお選びください'))
+        colorcnt = 1
+        sizecnt = 1
+        color_init = 0
+        size_init = 0
 
-        sz_form = SizeForm(size_list)
 
-        context['sss'] = sz_form
+        if self.request.method == 'POST' and 'size' in self.request.session and 'color' in self.request.session:
+            # サイズとカラーの２つ選ばれたときのプルダウン設定
+            colorcnt = 1
+            sizecnt = 1
+            for sz in szdist:
+                size_list.append((sizecnt,sz['sizename']))
+                if sz['sizename'] == self.request.session['size']:
+                    size_init = sizecnt
+                sizecnt += 1
+            for cl in cldist:
+                color_list.append((colorcnt,cl['colorname']))
+                if cl['colorname'] == self.request.session['color']:
+                    color_init = sizecnt
+                colorcnt += 1
+
+        else:
+            for sz in szdist:
+                size_list.append((sizecnt,sz['sizename']))
+                sizecnt += 1
+            for cl in cldist:
+                color_list.append((colorcnt,cl['colorname']))
+                colorcnt += 1
+
+        # フォームをインスタンス化し、choice(プルダウンのリスト)に「size_list」を入れ、初期表示位置(initiral)を設定する。
+        sz_form = SizeForm(szchoice=size_list,initial={'size' : size_init })
+        # フォームをインスタンス化し、choice(プルダウンのリスト)に「color_list」を入れ、初期表示位置(initiral)を設定する。
+        cl_form = ColorForm(clchoice=color_list,initial={'color': color_init})
+
+        print(sz_form)
+        print(cl_form)
+        # contextにsz_formとcl_formと入れる
+        context['sizeform'] = sz_form
+        context['colorform'] = cl_form
+
+        # プルダウンの項目をフォームに持たせる処理(テスト) End
 
         # contextにクエリ発行した結果を追加し、テンプレートタグで使用可能にする。
         context['size_form'] = szdist
@@ -363,6 +404,8 @@ class details_ListView(generic.ListView):
 
         # 戻り値としてcontextを返す。
         return context
+
+details_listview = details_ListView.as_view()
 
 
 class details_detailView(generic.DetailView):
@@ -385,5 +428,4 @@ def colorID_search(self,colorname=None):
         print(ans)
     else:
         print("色なし")
-
 

@@ -1,0 +1,12 @@
+{% extends 'searchapp/base.html' %}
+<!-- オーバーライド対象：content=子テンプレートのブロック名 -->
+
+<!-- テンプレートの継承先 -->
+{% block content %}
+    <form action="" method="POST">
+        {% csrf_token %}
+        <input class="btn btn-success offset-md-4 col-md-3" type="submit" id="button" name="Pbutton_01" value="test2">
+    </form>
+    {{ texttest }}
+
+{% endblock %}

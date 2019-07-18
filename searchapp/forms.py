@@ -69,14 +69,23 @@ class SizeForm(forms.Form):
         choices =(),
         label = 'サイズ',
         disabled=False,
-        widget=forms.Select(attrs={
-            'id': 'size',}),
+        widget=forms.Select(
+            attrs={'onChange': 'selChange()'},
+            ),
     )
 
 class ColorForm(forms.Form):
+    def __init__(self,clchoice,*args,**kwargs):
+        super(ColorForm, self).__init__(*args, **kwargs)
+        self.fields['color'].choices = clchoice
+
     color = forms.ChoiceField(
-            initial = '',
-            label = '色',
-            disabled = False,
-            required = False,
-        )
+        choices =(),
+        label = '色',
+        disabled=False,
+        widget=forms.Select(
+            attrs={'onChange' : 'selChange()',
+                        'id' : 'color_id',
+                        },
+            ),
+    )

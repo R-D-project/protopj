@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class ="container" >
-    <q style  ="align: center">
+    <!--  <q style  ="align: center"> -->
     <!-- 詳細ページが存在しない場合(商品情報削除と詳細ページ表示が同タイミングで発生) -->
     {% if goodsdetails|length == 0 %}
         <p>検索結果が存在しません。</p>
@@ -69,24 +69,15 @@
                             {% endif %}
                             </td>
                     </tr>
-                    <tr>
-                        <th>お試し</th>
-                            <td>
-                                <select>
-                                {% for sa in sss %}
-
-                                <option {{sa}}>
-                                {{ sa }}
-                                </option>
-
-                                {% endfor %}
-                                </select>
-                            </td>
-                    </tr>
+                    <form action = "" method = "POST" name = "selform">
+                    {% csrf_token %}
+                        {{ sizeform }}
+                        {{ colorform }}
+                    </form>
                 </thead>
             </table>
     {% endif %}
 
-    </q>
+    <!-- </q> -->
 </div>
 {% endblock %}
