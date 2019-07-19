@@ -11,12 +11,11 @@ function selectChange(){
 
 function selChange(){
 	//サイズと色が選択されているかを判定する(if文追加)
-	document.selectform.submit();
 	sizef = document.selform.size;
 	sizeindex = sizef.selectedIndex;
 	colorf = document.selform.color;
 	colorindex = colorf.selectedIndex;
-	if(sizef.options[sizeindex].value == "0" && colorf.options[colorindex].value == "1"){
+	if(sizef.options[sizeindex].value != "0" && colorf.options[colorindex].value != "0"){
 		document.selform.submit();
 	}
 }

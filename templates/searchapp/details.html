@@ -11,6 +11,7 @@
             <table class="bg-white table table-bordered">
                 <thead class="thead-dark">
                 {% for form in goodsdetails %}
+                    {% if forloop.first %}
                     <tr>
                         <th>上位カテゴリ名</th>
                         <td>{{ form.categoryid.highcategoryid.highcategoryname }}</td>
@@ -27,6 +28,7 @@
                         <th>価格（￥）※税抜き</th>
                             <td align="right">{{ form.price }}</td>
                     </tr>
+                    {% endif %}
                 {% endfor %}
                     <form action = "" method = "POST" name = "selectform">
                         <tr>

@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.views.generic.base import TemplateView
+from django.shortcuts import redirect
 from .forms import GoodSearchForm
 from .forms import GoodListForm
 from .forms import SizeForm
@@ -10,7 +11,7 @@ from .forms import ColorForm
 from .models import CategoryTBL
 from .models import GoodsTBL
 from .models import HighCategoryTBL
-
+from datetime import datetime
 
 
 
@@ -74,13 +75,18 @@ class SearchScreen(generic.FormView):
 
 
 
-class ResultList(generic.ListView):
+class Result_ListView(generic.ListView):
     # modelは取り扱うモデルクラス(モデル名と紐づけ)
     model = GoodsTBL
     # template_nameは利用するテンプレート名
     # (ListViewの場合、何も設定しないとhtml名の最後に[_list]が付く)
-    template_name = 'searchapp/post_list.html'
+    template_name = 'searchapp/result.html'
 
+    def post(self, request, *args, **kwargs):
+        print(request.POST.get('productno',None))
+        request.session['g_de_productno'] = request.POST.get('productno',None)
+
+        return redirect('searchapp:details')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         """
@@ -90,59 +96,17 @@ class ResultList(generic.ListView):
         # 親クラスのメソッド呼び出し、変数contextに格納
         context = super().get_context_data(**kwargs)
 
-        title = ''
-        category = ''
-        price = ''
-
-        # 最初はセッションに値が無いからこのif節は呼ばれない
-        if 'form_value' in self.request.session:
-            form_value = self.request.session['form_value']
-            title = form_value[0]
-            category = form_value[1]
-            price = form_value[2]
-
-        # 辞書新規作成⇒初期値ではそれぞれ「空白」が設定
-        default_data = {'title' :title, 'category' :category, 'price' :price}
-
-        # 入力フォームに初期値では空白を設定する処理
-        test_form = GoodListForm(initial = default_data)
-
-        # 入力フォームに空白を指定したテンプレートを呼び出し、返却する処理
-        context['test_form'] = test_form
         return context
 
     # 呼び出された（オーバーライドされたメソッド）
     def get_queryset(self):
-    # DBから検索条件に一致したデータを取得
 
-        # セッションに値があるときに動作する
-        # ⇒最初にページに入ったときはセッションに値がないので、下のelse文が実行される
-        #if 'form_value' in self.request.session:
-            #form_value = self.request.session['form_value']
-            #title = form_value[0]
-            #category = form_value[1]
-            #price = form_value[2]
+        goodsid = 'AABBCC001S003'
+        productno = goodsid[:9]
+        deleteflag = 0 # 有効状態
 
-            #Qオブジェクトを各変数にインスタンス化
-            #condition_title = Q()
-            #condition_category = Q()
-            #condition_price = Q()
+        return GoodsTBL.objects.select_related().all()
 
-            # クエリを発行
-            # 入力フォームに値が入っているかの判定
-            # 変数の長さが1以上で、null値ではない場合、クエリを発行する。
-            #if len(title) != 0 and title[0]:
-            #    condition_title = Q(title__contains = title)
-            #if len(category) != 0 and category[0]:
-            #    condition_category = Q(category__contains = category)
-            #if len(price) != 0 and price[0]:
-            #    condition_price = Q(price__contains = price)
-
-            # 定義されたクエリを発行し、データをobject_listへ格納する。
-            return GoodsTBL.objects.select_related().all()
-
-#        else:
-#            return GoodsTBL.objects.none() # 何も返さない
 
 
 class DetailsView(TemplateView):
@@ -168,16 +132,6 @@ class details_ListView(generic.ListView):
     #何も設定しないと、「object_list」で返す。
     context_object_name = 'goodsdetails'
 
-    def index(request):
-        if request.method == 'POST':
-            print('index:POSTメソッド')
-        elif request.method == 'GET':
-            print('index:GETメソッド')
-        else:
-            print('index:？？')
-
-        return self.get(request, *args, **kwargs)
-
 
     def post(self, request, *args, **kwargs):
         if 'sizeselect' in request.POST and 'colorselect' in request.POST:
@@ -186,9 +140,11 @@ class details_ListView(generic.ListView):
         else:
             print('プルダウン以外の処理')
 
+        #在庫判定処理で使用するため、session['size]と['color']に画面上で定義している'size'と'color'を格納する。
         if 'size' in request.POST and 'color' in request.POST:
             request.session['size'] = self.request.POST.get('size',None)
             request.session['color'] = self.request.POST.get('color',None)
+
 
         # generic/list.pyのget()メソッドが呼び出される
         # getメソッドの中でget_querysetとget_context_dataを呼び出している。
@@ -199,122 +155,100 @@ class details_ListView(generic.ListView):
         #post処理だけして返す場合
         #return render(request,'searchapp/details.html')
 
-
     def get_queryset(self): # 呼び出された（オーバーライドされたメソッド）
         '''
         詳細画面に表示する商品を検索する。
         '''
-        # セッションに値があるときに動作する
-        # ⇒最初にページに入ったときはセッションに値がないので、下のelse文が実行される
-        '''
-        if 'form_value' in self.request.session:
-            form_value = self.request.session['form_value']
-            title = form_value[0]
-            category = form_value[1]
-            price = form_value[2]
-        '''
 
-
-        goodsid = 'AABBCC001S003'
-        productno = goodsid[:9]
+        # SQL文の検索条件の値を変数に持たせる。
+        # goodsid = 'AABBCC001S003'
+        # productno = goodsid[:9]
+        # セッションに持たせていた'g_de_productno'を変数'productnoに代入する。
+        productno = self.request.session['g_de_productno']
         deleteflag = 0 # 有効状態
+
+        '''■詳細画面表示に必要なDB検索条件(and)
+            製品番号が変数'productno'と一致
+            論理削除フラグが有効状態(削除されていない状態)
+            販売開始年月日が現在の時間よりも前
+            販売終了年月日が現在の時間よりも後
         '''
-        ■DB検索条件(and)
-        製品番号 = 'AABBCC001'
-        論理削除フラグ = 0
-        販売開始年月日 < 現在時間(now)
-        販売終了年月日 > 現在時間(now)
-        '''
+
         #Qオブジェクトを各変数にインスタンス化
-        condition_goodsid = Q() #商品IDのQオブジェクト(含め)
-        exact_goodsid = Q() # 商品IDのQオブジェクト(完全一致)
         exact_productno = Q() # 製造番号のQオブジェクト(完全一致)
         condition_salesstartdate = Q() # 販売開始年月日のQオブジェクト(含め)
         condition_salesenddate = Q() # 販売終了年月日のQオブジェクト(含め)
         exact_deleteflag = Q() #論理削除フラグのQオブジェクト(完全一致)
 
-
-
-        # クエリを発行
-        exact_goodsid = Q(goodsid__exact = str(goodsid)) # 条件：商品ID='AABBCC001S003'
-        condition_goodsid = Q(goodsid__contains = str(productno)) # 条件：商品IDに'AABBCC001'が含まれている
+        # Qオブジェクトを使用して条件を作成
         exact_productno = Q(productno__exact = str(productno)) # 条件：製造番号='AABBCC001'
         exact_deleteflag = Q(deleteflag__exact = deleteflag) # 条件：論理削除フラグ = 1
+        lte_salesstartdate = Q(salesstartdate__lte = datetime.now().date())
+        gte_salesenddate = Q(salesenddate__gte = datetime.now().date())
+        exact_salesenddate = Q(salesenddate__exact = None)
 
-            # 入力フォームに値が入っているかの判定
-            # 変数の長さが1以上で、null値ではない場合、クエリを発行する。
-        '''
-            if len(title) != 0 and title[0]:
-                condition_title = Q(title__contains = title)
-            if len(category) != 0 and category[0]:
-                condition_category = Q(category__contains = category)
-            if len(price) != 0 and price[0]:
-                condition_price = Q(price__contains = price)
-        '''
-        kekka = GoodsTBL.objects.select_related().filter(exact_goodsid & exact_deleteflag)
-        # 定義されたクエリを発行し、データをgoodsdetailsへ格納する。
+        # クエリを発行
+        kekka = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag & lte_salesstartdate & (gte_salesenddate | exact_salesenddate))
+
+        # クエリ発行結果をgoodsdetailsへ格納する。
         return kekka
-        '''
-        kekka = GoodsTBL.objects.select_related().all()
-        kekka = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag)
-        kekka = GoodsTBL.objects.select_related().filter(condition_goodsid & exact_deleteflag)
-        kekka = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('productno').distinct()
 
-         定義されたクエリを発行し、データをobject_listへ格納する。
-         return GoodsTBL.objects.select_related().filter(condition_productno & condition_deleteflag)
-
-        else:
-            return Good.objects.none() # 何も返さない
-        '''
 
     def get_context_data(self, *, object_list=None, **kwargs):
         # 親クラスのメソッド呼び出し、変数contextに格納
         context = super().get_context_data(**kwargs)
-        '''
-        ■DB検索条件(and)
-        製品番号 = 'AABBCC001'
-        論理削除フラグ = 1
-        販売開始年月日 < 現在時間(now)
-        販売終了年月日 > 現在時間(now)
-        '''
 
-        goodsid = 'AABBCC001S003'
-        productno = goodsid[:9]
+        # goodsid = 'AABBCC001S003'
+        # productno = goodsid[:9]
+        # クエリ発行時の条件となる「製品番号」と「論理削除フラグ」を変数に入れる
+        productno = self.request.session['g_de_productno']
         deleteflag = 0 # 有効状態
 
-        # クライアント側(HTML側)からPOSTで返ってきたときの処理
+        '''
+        サイズ、色のプルダウンが二つとも選択された時に在庫数を判定しcontextに判定結果を返す処理
+        '''
+        # クライアント側(HTML側)で実行した処理メソッド判定
         if self.request.method == 'POST':
-            # 在庫数判定の前提条件
-            # 'sizeselect'と'colorselect'がsessionに登録されている
-            if 'sizeselect' in self.request.session and 'colorselect' in self.request.session:
-                colorn = self.request.session['colorselect']
+            # 在庫数判定の前提条件:'sizeselect'と'colorselect'がsessionに登録されている
+            # if 'sizeselect' in self.request.session and 'colorselect' in self.request.session
+            if 'size' in self.request.session and 'color' in self.request.session:
 
-                colorID_search(self,colorname=colorn)
-                exact_sizename = Q(sizename__exact = str(self.request.session['sizeselect']))
-                exact_colorname = Q(colorname__exact = str(self.request.session['colorselect']))
+                # 処理改善：結果を一意に(1件)に絞り込みたい)
+                # 色の名前から色番号(商品IDと対になるもの)を参照してくる
+                # colorID_search(self,colorname=self.request.session['color'])
+
+
+                # exact_sizename = Q(sizename__exact = str(self.request.session['sizeselect']))
+                # exact_colorname = Q(colorname__exact = str(self.request.session['colorselect']))
+                exact_sizename = Q(sizename__exact = str(self.request.session['size']))
+                exact_colorname = Q(colorname__exact = str(self.request.session['color']))
                 exact_productno = Q(productno__exact = str(productno))
-                #zaiko = GoodsTBL.objects.select_related().filter(exact_colorname & exact_sizename & exact_productno).first()
+                lte_salesstartdate = Q(salesstartdate__lte = datetime.now().date())
+                gte_salesenddate = Q(salesenddate__gte = datetime.now().date())
+                exact_salesenddate = Q(salesenddate__exact = None)
+                '''■DB検索条件(and)
+                製品番号 = 'AABBCC001'
+                論理削除フラグ = 1
+                販売開始年月日 < 現在時間(now)
+                販売終了年月日 > 現在時間(now)
+                '''
                 #条件に当てはまる数を確認(1件あるかないか)
-                zaikaku = GoodsTBL.objects.select_related().filter(exact_colorname & exact_sizename & exact_productno).count()
+                zaikaku = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag & lte_salesstartdate & (gte_salesenddate | exact_salesenddate)).count()
 
                 # 対象商品のサイズと色のパターンが存在しているか判定
                 if int(zaikaku) == 0:
-                    # 対象商品のパターンが存在しない場合
+                    # 対象商品のパターンが存在しない場合は'-'を返す
                     zaikoJudg = '-'
-
                 else:
                     # 対象商品のパターンが存在した場合
                     # 製造番号、色、サイズで商品を特定する。(プライマリキーでは無いため、内部では1件なのかが分からない
-                    zaiko = GoodsTBL.objects.select_related().filter(exact_colorname & exact_sizename & exact_productno)
-                    '''
-                    プライマリキーを使用して一意検索を掛ければfor文で回さなくても良い
-                    zaiko = GoodsTBL.objects.select_related().get(Q(goodsid__exact = str(goodsid)))
-                    print(zaiko.goodsstocks)
-                    '''
+                    zaiko = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag & lte_salesstartdate & (gte_salesenddate | exact_salesenddate))
+
+                    # プライマリキーを使用して一意検索を掛ければfor文で回さなくても良い
+                    # zaiko = GoodsTBL.objects.select_related().get(Q(goodsid__exact = str(goodsid)))
+
                     # 在庫数を判定し、0か1以上かで'在庫あり','在庫なし'を判定する。
                     for zz in zaiko:
-                        print(zz.goodsstocks)
-
                         if zz.goodsstocks == 0:
                             zaikoJudg = "在庫なし"
                         elif zz.goodsstocks >= 1:
@@ -322,29 +256,38 @@ class details_ListView(generic.ListView):
                         else:
                             zaikoJudg = "-"
 
-                        print(zaikoJudg)
-                        zaikofm = {'goodsstocks' : zaikoJudg}
+                    zaikofm = {'goodsstocks' : zaikoJudg}
 
                 # テンプレートで使用する変数'zaiko_form'に在庫有無の結果を代入する
                 context['zaiko_form'] = zaikoJudg
 
+            else:
+                print('get_contect_data:session値なし')
         else:
             print('get_contect_data:GET')
 
+
+
+
         # Qオブジェクトの初期設定(インスタンス化)
-        exact_goodsid = Q() # 商品IDのQオブジェクト(完全一致)
+        # exact_goodsid = Q() # 商品IDのQオブジェクト(完全一致)
         exact_productno = Q() # 製造番号のQオブジェクト(完全一致)
         exact_deleteflag = Q() # 論理削除フラグのQオブジェクト(完全一致)
-
+        lte_salesstartdate = Q()
+        gte_salesenddate = Q()
+        exact_salesenddate = Q()
         #インスタンス化した変数にQオブジェクト(検索条件)を記述
-        exact_goodsid = Q(goodsid__exact = str(goodsid)) # 条件：商品ID='AABBCC001S003'
+        # exact_goodsid = Q(goodsid__exact = str(goodsid)) # 条件：商品ID='AABBCC001S003'
         exact_productno = Q(productno__exact = str(productno)) # 条件：製造番号='AABBCC001'
         exact_deleteflag = Q(deleteflag__exact = int(deleteflag))  # 条件：論理削除フラグ = 1
+        lte_salesstartdate = Q(salesstartdate__lte = datetime.now().date())
+        gte_salesenddate = Q(salesenddate__gte = datetime.now().date())
+        exact_salesenddate = Q(salesenddate__exact = None)
 
         # Qオブジェクトで定義した検索条件でクエリを発行する。
-        szdist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('sizename').order_by('-sizename').distinct()
-        cldist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag).values('colorname').order_by('-colorname').distinct()
-        goodsdetail = GoodsTBL.objects.select_related().filter(exact_goodsid & exact_deleteflag)
+        szdist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag & lte_salesstartdate & (gte_salesenddate | exact_salesenddate)).values('sizename').order_by('-sizename').distinct()
+        cldist = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag & lte_salesstartdate & (gte_salesenddate | exact_salesenddate)).values('colorname').order_by('-colorname').distinct()
+        # goodsdetail = GoodsTBL.objects.select_related().filter(exact_goodsid & exact_deleteflag)
 
 
 
@@ -362,6 +305,7 @@ class details_ListView(generic.ListView):
 
 
         if self.request.method == 'POST' and 'size' in self.request.session and 'color' in self.request.session:
+
             # サイズとカラーの２つ選ばれたときのプルダウン設定
             colorcnt = 1
             sizecnt = 1
@@ -389,8 +333,8 @@ class details_ListView(generic.ListView):
         # フォームをインスタンス化し、choice(プルダウンのリスト)に「color_list」を入れ、初期表示位置(initiral)を設定する。
         cl_form = ColorForm(clchoice=color_list,initial={'color': color_init})
 
-        print(sz_form)
-        print(cl_form)
+        #print(sz_form)
+        #print(cl_form)
         # contextにsz_formとcl_formと入れる
         context['sizeform'] = sz_form
         context['colorform'] = cl_form
@@ -400,7 +344,7 @@ class details_ListView(generic.ListView):
         # contextにクエリ発行した結果を追加し、テンプレートタグで使用可能にする。
         context['size_form'] = szdist
         context['color_form'] = cldist
-        context['goods_form'] = goodsdetail
+        # context['goods_form'] = goodsdetail
 
         # 戻り値としてcontextを返す。
         return context
