@@ -204,6 +204,8 @@ class details_ListView(generic.ListView):
         productno = self.request.session['g_de_productno']
         deleteflag = 0 # 有効状態
 
+        # 在庫状況の初期表示文字
+        zaikoJudg = '-'
         '''
         サイズ、色のプルダウンが二つとも選択された時に在庫数を判定しcontextに判定結果を返す処理
         '''
@@ -223,6 +225,7 @@ class details_ListView(generic.ListView):
                 exact_sizename = Q(sizename__exact = str(self.request.session['size']))
                 exact_colorname = Q(colorname__exact = str(self.request.session['color']))
                 exact_productno = Q(productno__exact = str(productno))
+                exact_deleteflag = Q(deleteflag__exact = deleteflag) # 条件：論理削除フラグ = 1
                 lte_salesstartdate = Q(salesstartdate__lte = datetime.now().date())
                 gte_salesenddate = Q(salesenddate__gte = datetime.now().date())
                 exact_salesenddate = Q(salesenddate__exact = None)
@@ -233,13 +236,10 @@ class details_ListView(generic.ListView):
                 販売終了年月日 > 現在時間(now)
                 '''
                 #条件に当てはまる数を確認(1件あるかないか)
-                zaikaku = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag & lte_salesstartdate & (gte_salesenddate | exact_salesenddate)).count()
+                zaikaku = GoodsTBL.objects.select_related().filter(exact_sizename & exact_colorname & exact_productno & exact_deleteflag & lte_salesstartdate & (gte_salesenddate | exact_salesenddate)).count()
 
                 # 対象商品のサイズと色のパターンが存在しているか判定
-                if int(zaikaku) == 0:
-                    # 対象商品のパターンが存在しない場合は'-'を返す
-                    zaikoJudg = '-'
-                else:
+                if int(zaikaku) != 0:
                     # 対象商品のパターンが存在した場合
                     # 製造番号、色、サイズで商品を特定する。(プライマリキーでは無いため、内部では1件なのかが分からない
                     zaiko = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag & lte_salesstartdate & (gte_salesenddate | exact_salesenddate))
@@ -256,17 +256,17 @@ class details_ListView(generic.ListView):
                         else:
                             zaikoJudg = "-"
 
-                    zaikofm = {'goodsstocks' : zaikoJudg}
+                    # zaikofm = {'goodsstocks' : zaikoJudg}
 
                 # テンプレートで使用する変数'zaiko_form'に在庫有無の結果を代入する
-                context['zaiko_form'] = zaikoJudg
+
 
             else:
                 print('get_contect_data:session値なし')
         else:
             print('get_contect_data:GET')
 
-
+        context['zaiko_form'] = zaikoJudg
 
 
         # Qオブジェクトの初期設定(インスタンス化)
