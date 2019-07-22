@@ -30,36 +30,10 @@
                     </tr>
                     {% endif %}
                 {% endfor %}
-                    <form action = "" method = "POST" name = "selectform">
-                        <tr>
-                            <th>サイズ</th>
-
-                                {% csrf_token %}
-                                <td>
-                                    <select name="sizeselect" onChange="selectChange()">
-                                        <option id ="0" value="-">サイズをお選びください</option>
-                                        {% for sform in size_form %}
-                                        <option id = "{{ forloop.counter}}" value ="{{sform.sizename }}">
-                                        {{ sform.sizename }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-
-                        </tr>
-                    <tr>
-                        <th>色</th>
-                            <td>
-                                <select name="colorselect" onChange="selectChange()">
-                                    <option id = "0" value ="-">色をお選びください</option>
-                                    {% for cform in color_form %}
-                                    <option id = "{{ forloop.counter }}" value ="{{ cform.colorname }}">
-                                    {{ cform.colorname }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                    </tr>
+                    <form action = "" method = "POST" name = "selform">
+                    {% csrf_token %}
+                        {{ sizeform }}
+                        {{ colorform }}
                     </form>
                     <tr>
                         <th>在庫有無</th>
@@ -71,11 +45,6 @@
                             {% endif %}
                             </td>
                     </tr>
-                    <form action = "" method = "POST" name = "selform">
-                    {% csrf_token %}
-                        {{ sizeform }}
-                        {{ colorform }}
-                    </form>
                 </thead>
             </table>
     {% endif %}

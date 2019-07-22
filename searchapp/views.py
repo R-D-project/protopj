@@ -86,6 +86,8 @@ class Result_ListView(generic.ListView):
         print(request.POST.get('productno',None))
         request.session['g_de_productno'] = request.POST.get('productno',None)
 
+
+        '''クエリ発行データをセッションに格納する方法を検証中
         kueri = GoodsTBL.objects.select_related().all()
         goodsiddata = [aa.goodsid for aa in kueri]
         cate = [aa.categoryid.categoryname for aa in kueri]
@@ -98,6 +100,8 @@ class Result_ListView(generic.ListView):
             print(dic['goodsid'])
 
         print(dic)
+        '''
+
         return redirect('searchapp:details')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -145,18 +149,24 @@ class details_ListView(generic.ListView):
     context_object_name = 'goodsdetails'
 
 
+    # POSTメソッドを呼び出すのはプルダウンの選択を変更したときのみ
     def post(self, request, *args, **kwargs):
+
+        '''
         if 'sizeselect' in request.POST and 'colorselect' in request.POST:
             request.session['sizeselect'] = self.request.POST.get('sizeselect',None)
             request.session['colorselect'] = self.request.POST.get('colorselect',None)
         else:
             print('プルダウン以外の処理')
+        '''
 
-        #在庫判定処理で使用するため、session['size]と['color']に画面上で定義している'size'と'color'を格納する。
+        # 在庫判定処理で使用するため、session['size]と['color']に画面上で定義している'size'と'color'を格納する。
+        # HTMLの＜form＞タグ内にsizeselectとcolorselectがあることを確認(プルダウンの処理)
         if 'size' in request.POST and 'color' in request.POST:
             request.session['size'] = self.request.POST.get('size',None)
             request.session['color'] = self.request.POST.get('color',None)
-
+        else:
+            print('プルダウン以外の処理')
 
         # generic/list.pyのget()メソッドが呼び出される
         # getメソッドの中でget_querysetとget_context_dataを呼び出している。
@@ -170,6 +180,7 @@ class details_ListView(generic.ListView):
     def get_queryset(self): # 呼び出された（オーバーライドされたメソッド）
         '''
         詳細画面に表示する商品を検索する。
+        (19/07/23)ここでやっている処理は初期表示のみなので、前画面から表示する商品データを取得できる場合は不要になる。
         '''
 
         # SQL文の検索条件の値を変数に持たせる。
@@ -213,8 +224,11 @@ class details_ListView(generic.ListView):
         # goodsid = 'AABBCC001S003'
         # productno = goodsid[:9]
         # クエリ発行時の条件となる「製品番号」と「論理削除フラグ」を変数に入れる
-        productno = self.request.session['g_de_productno']
+        productno = ''
         deleteflag = 0 # 有効状態
+        # session情報に'g_de_productno'が格納されているか判定（前画面から画面遷移されてきているか判定）
+        if 'g_de_productno' in self.request.session:
+            productno = self.request.session['g_de_productno']
 
         # 在庫状況の初期表示文字
         zaikoJudg = '-'
@@ -231,9 +245,7 @@ class details_ListView(generic.ListView):
                 # 色の名前から色番号(商品IDと対になるもの)を参照してくる
                 # colorID_search(self,colorname=self.request.session['color'])
 
-
-                # exact_sizename = Q(sizename__exact = str(self.request.session['sizeselect']))
-                # exact_colorname = Q(colorname__exact = str(self.request.session['colorselect']))
+                # session['size']とsession['color']の値が番号になっているから検索に引っかからない
                 exact_sizename = Q(sizename__exact = str(self.request.session['size']))
                 exact_colorname = Q(colorname__exact = str(self.request.session['color']))
                 exact_productno = Q(productno__exact = str(productno))
@@ -241,14 +253,16 @@ class details_ListView(generic.ListView):
                 lte_salesstartdate = Q(salesstartdate__lte = datetime.now().date())
                 gte_salesenddate = Q(salesenddate__gte = datetime.now().date())
                 exact_salesenddate = Q(salesenddate__exact = None)
-                '''■DB検索条件(and)
-                製品番号 = 'AABBCC001'
-                論理削除フラグ = 1
-                販売開始年月日 < 現在時間(now)
-                販売終了年月日 > 現在時間(now)
-                '''
+
                 #条件に当てはまる数を確認(1件あるかないか)
-                zaikaku = GoodsTBL.objects.select_related().filter(exact_sizename & exact_colorname & exact_productno & exact_deleteflag & lte_salesstartdate & (gte_salesenddate | exact_salesenddate)).count()
+                zaikaku = GoodsTBL.objects.select_related().filter( \
+                    exact_sizename \
+                    & exact_colorname \
+                    & exact_productno \
+                    & exact_deleteflag \
+                    & lte_salesstartdate \
+                    & (gte_salesenddate | exact_salesenddate))\
+                    .count()
 
                 # 対象商品のサイズと色のパターンが存在しているか判定
                 if int(zaikaku) != 0:
@@ -315,48 +329,41 @@ class details_ListView(generic.ListView):
         color_init = 0
         size_init = 0
 
-
-        if self.request.method == 'POST' and 'size' in self.request.session and 'color' in self.request.session:
+        if \
+            self.request.method == 'POST' \
+            and 'size' in self.request.session \
+            and 'color' in self.request.session:
 
             # サイズとカラーの２つ選ばれたときのプルダウン設定
-            colorcnt = 1
-            sizecnt = 1
             for sz in szdist:
-                size_list.append((sizecnt,sz['sizename']))
+                size_list.append((sz['sizename'],sz['sizename']))
                 if sz['sizename'] == self.request.session['size']:
-                    size_init = sizecnt
-                sizecnt += 1
+                    size_init = self.request.session['size']
             for cl in cldist:
-                color_list.append((colorcnt,cl['colorname']))
+                color_list.append((cl['colorname'],cl['colorname']))
                 if cl['colorname'] == self.request.session['color']:
-                    color_init = sizecnt
-                colorcnt += 1
+                    color_init = self.request.session['color']
+
 
         else:
             for sz in szdist:
-                size_list.append((sizecnt,sz['sizename']))
-                sizecnt += 1
+                size_list.append((sz['sizename'],sz['sizename']))
             for cl in cldist:
-                color_list.append((colorcnt,cl['colorname']))
-                colorcnt += 1
+                color_list.append((cl['colorname'],cl['colorname']))
+
 
         # フォームをインスタンス化し、choice(プルダウンのリスト)に「size_list」を入れ、初期表示位置(initiral)を設定する。
         sz_form = SizeForm(szchoice=size_list,initial={'size' : size_init })
         # フォームをインスタンス化し、choice(プルダウンのリスト)に「color_list」を入れ、初期表示位置(initiral)を設定する。
         cl_form = ColorForm(clchoice=color_list,initial={'color': color_init})
 
-        #print(sz_form)
+        print(sz_form)
         #print(cl_form)
         # contextにsz_formとcl_formと入れる
         context['sizeform'] = sz_form
         context['colorform'] = cl_form
 
         # プルダウンの項目をフォームに持たせる処理(テスト) End
-
-        # contextにクエリ発行した結果を追加し、テンプレートタグで使用可能にする。
-        context['size_form'] = szdist
-        context['color_form'] = cldist
-        # context['goods_form'] = goodsdetail
 
         # 戻り値としてcontextを返す。
         return context

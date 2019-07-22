@@ -70,7 +70,9 @@ class SizeForm(forms.Form):
         label = 'サイズ',
         disabled=False,
         widget=forms.Select(
-            attrs={'onChange': 'selChange()'},
+            attrs={'onChange': 'selChange()',
+                        'id' : 'size_id',
+                        },
             ),
     )
 
@@ -89,3 +91,9 @@ class ColorForm(forms.Form):
                         },
             ),
     )
+
+class ZaikoForm(forms.Form):
+    goodsstocks = forms.CharField(
+        initial = '',
+        label = '在庫有無',
+        )
