@@ -86,6 +86,18 @@ class Result_ListView(generic.ListView):
         print(request.POST.get('productno',None))
         request.session['g_de_productno'] = request.POST.get('productno',None)
 
+        kueri = GoodsTBL.objects.select_related().all()
+        goodsiddata = [aa.goodsid for aa in kueri]
+        cate = [aa.categoryid.categoryname for aa in kueri]
+        Hcate = [aa.categoryid.highcategoryid.highcategoryname for aa in kueri]
+
+        dic = dict.fromkeys(['goodsid','prodocutno','goodsname','categoryname','Highcategoryname','price'])
+        dict_test = {}
+        for aa in kueri:
+            dic['goodsid']= aa.goodsid
+            print(dic['goodsid'])
+
+        print(dic)
         return redirect('searchapp:details')
 
     def get_context_data(self, *, object_list=None, **kwargs):
