@@ -72,6 +72,7 @@ class SizeForm(forms.Form):
         widget=forms.Select(
             attrs={'onChange': 'selChange()',
                         'id' : 'size_id',
+                        'tabindex' : '1',
                         },
             ),
     )
@@ -88,6 +89,7 @@ class ColorForm(forms.Form):
         widget=forms.Select(
             attrs={'onChange' : 'selChange()',
                         'id' : 'color_id',
+                        'tabindex' : '2',
                         },
             ),
     )
