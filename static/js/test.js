@@ -15,7 +15,7 @@ function selChange(){
 	sizeindex = sizef.selectedIndex;
 	colorf = document.selform.color;
 	colorindex = colorf.selectedIndex;
-	if(sizef.options[sizeindex].value != "0" && colorf.options[colorindex].value != "0"){
-		document.selform.submit();
-	}
+
+	document.selform.submit();
+
 }
