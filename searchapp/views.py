@@ -27,11 +27,11 @@ class SearchScreen(generic.FormView):
     form_class = GoodSearchForm
 
     def post(self, request, *args, **kwargs):
-        """
+        '''
         検索フォームに入力された値をセッションに格納するメソッド
         ⇒初期アクセスでは、検索フォームに入力されていない⇒セッションに格納される処理は呼ばれない
         ⇒初期アクセスではこのメソッドは呼ばれない
-        """
+        '''
         # 検索値を格納するリストを新規作成
         srh_value = [
                 self.request.POST.get('categoryname', None),
@@ -47,10 +47,10 @@ class SearchScreen(generic.FormView):
 
 
     def get_context_data(self, **kwargs):
-        """
+        '''
          初期値に空白を設定したテンプレートを返すメソッド
          ⇒最初にサイトを呼び出すときに必ず呼ばれる
-        """
+        '''
         # 親クラスのメソッド呼び出し、変数contextに格納
         context = super().get_context_data(**kwargs)
 
@@ -125,21 +125,11 @@ class details_ListView(generic.ListView):
     # POSTメソッドを呼び出すのはプルダウンの選択を変更したときのみ
     def post(self, request, *args, **kwargs):
 
-        '''
-        if 'sizeselect' in request.POST and 'colorselect' in request.POST:
-            request.session['sizeselect'] = self.request.POST.get('sizeselect',None)
-            request.session['colorselect'] = self.request.POST.get('colorselect',None)
-        else:
-            print('プルダウン以外の処理')
-        '''
-
         # 在庫判定処理で使用するため、session['size]と['color']に画面上で定義している'size'と'color'を格納する。
         # HTMLの＜form＞タグ内にsizeselectとcolorselectがあることを確認(プルダウンの処理)
         if 'size' in request.POST and 'color' in request.POST:
             request.session['size'] = self.request.POST.get('size',None)
             request.session['color'] = self.request.POST.get('color',None)
-        else:
-            print('プルダウン以外の処理')
 
         # generic/list.pyのget()メソッドが呼び出される
         # getメソッドの中でget_querysetとget_context_dataを呼び出している。
@@ -148,14 +138,10 @@ class details_ListView(generic.ListView):
     def get_queryset(self): # 呼び出された（オーバーライドされたメソッド）
         '''
         詳細画面に表示する商品を検索する。
-        (19/07/23)ここでやっている処理は初期表示のみなので、前画面から表示する商品データを取得できる場合は不要になる。
         '''
-
         # SQL文の検索条件の値を変数に持たせる。
-        # goodsid = 'AABBCC001S003'
-        # productno = goodsid[:9]
         # セッションに持たせていた'g_de_productno'を変数'productnoに代入する。
-        productno = self.request.session['g_de_productno']
+        productno = self.request.session.get('g_de_productno','')
         deleteflag = 0 # 有効状態
 
         '''■詳細画面表示に必要なDB検索条件(and)
@@ -164,7 +150,6 @@ class details_ListView(generic.ListView):
             販売開始年月日が現在の時間よりも前
             販売終了年月日が現在の時間よりも後
         '''
-
         #Qオブジェクトを各変数にインスタンス化
         exact_productno = Q() # 製造番号のQオブジェクト(完全一致)
         condition_salesstartdate = Q() # 販売開始年月日のQオブジェクト(含め)
@@ -172,20 +157,16 @@ class details_ListView(generic.ListView):
         exact_salesenddate = Q() # 販売終了年月日のQオブジェクト(完全一致)
         exact_deleteflag = Q() #論理削除フラグのQオブジェクト(完全一致)
 
-
         # Qオブジェクトを使用して条件を作成
         exact_productno = Q(productno__exact = str(productno))
         exact_deleteflag = Q(deleteflag__exact = deleteflag)
         lte_salesstartdate = Q(salesstartdate__lte = datetime.now().date())
         gte_salesenddate = Q(salesenddate__gte = datetime.now().date())
         exact_salesenddate = Q(salesenddate__exact = None)
-
         # クエリを発行
         kekka = GoodsTBL.objects.select_related().filter(exact_productno & exact_deleteflag & lte_salesstartdate & (gte_salesenddate | exact_salesenddate))
-
         # クエリ発行結果をgoodsdetailsへ格納する。
         return kekka
-
 
     def get_context_data(self, *, object_list=None, **kwargs):
         # 親クラスのメソッド呼び出し、変数contextに格納
@@ -197,11 +178,11 @@ class details_ListView(generic.ListView):
 
         # 前画面のViewからsession情報に'g_de_productno'を格納した状態で遷移されている場合はその値を格納する。
         productno = self.request.session.get('g_de_productno','')
-        # プルダウン押下してsessionに'size'と'color'が入っている場合はその値を、入っていない場合は空白を各変数に格納する。
-        size = self.request.session.get('size','')
-        color = self.request.session.get('color','')
+        # プルダウン押下してsessionに'size'と'color'が入っている場合はその値を、入っていない場合は0を各変数に格納する。
+        size = self.request.session.get('size','0')
+        color = self.request.session.get('color','0')
 
-        # Qオブジェクトの初期設定(インスタンス化)
+        '''# Qオブジェクトの初期設定(インスタンス化)
         exact_productno = Q() # 製造番号(完全一致)
         exact_deleteflag = Q() # 論理削除フラグ(完全一致)
         lte_salesstartdate = Q() # 販売開始年月日(以上)
@@ -209,6 +190,7 @@ class details_ListView(generic.ListView):
         exact_salesenddate = Q() # 販売終了年月日(完全一致)
         exact_sizename = Q() # サイズ(完全一致)
         exact_colorname = Q() # 色(完全一致)
+        '''
 
         #インスタンス化した変数にQオブジェクト(検索条件)を記述
         exact_productno = Q(productno__exact = str(productno))
@@ -225,7 +207,6 @@ class details_ListView(generic.ListView):
         # クライアント側(HTML側)で実行した処理メソッド判定
         if self.request.method == 'POST':
             # 在庫数判定の前提条件:'sizeselect'と'colorselect'がsessionに登録されている
-            # if 'sizeselect' in self.request.session and 'colorselect' in self.request.session
             if 'size' in self.request.session and 'color' in self.request.session:
 
                 # 処理改善：結果を一意に(1件)に絞り込みたい)
@@ -258,10 +239,7 @@ class details_ListView(generic.ListView):
                         elif zz.goodsstocks >= 1:
                             zaikoJudg = "在庫あり"
 
-                else:
-                    zaikoJudg = "対象パターンなし"
-                # テンプレートで使用する変数'zaiko_form'に在庫有無の結果を代入する
-
+        # テンプレートで使用する変数'zaiko_form'に在庫有無の結果を代入する
         context['zaiko_form'] = zaikoJudg
 
         # Qオブジェクトで定義した検索条件でクエリを発行する。
@@ -278,28 +256,15 @@ class details_ListView(generic.ListView):
         size_list.append((size_init,'サイズをお選びください'))
         color_list.append((color_init,'色をお選びください'))
 
-        #
-        if \
-            self.request.method == 'POST' \
-            and 'size' in self.request.session \
-            and 'color' in self.request.session:
+        for sz in szdist:
+            size_list.append((sz['sizename'],sz['sizename']))
+            if sz['sizename'] == size:
+                size_init = size
 
-            # サイズとカラーの２つ選ばれたときのプルダウン設定
-            for sz in szdist:
-                size_list.append((sz['sizename'],sz['sizename']))
-                if sz['sizename'] == self.request.session['size']:
-                    size_init = self.request.session['size']
-
-            for cl in cldist:
-                color_list.append((cl['colorname'],cl['colorname']))
-                if cl['colorname'] == self.request.session['color']:
-                    color_init = self.request.session['color']
-
-        else:
-            for sz in szdist:
-                size_list.append((sz['sizename'],sz['sizename']))
-            for cl in cldist:
-                color_list.append((cl['colorname'],cl['colorname']))
+        for cl in cldist:
+            color_list.append((cl['colorname'],cl['colorname']))
+            if cl['colorname'] == color:
+                color_init = color
 
         # フォームをインスタンス化し、choice(プルダウンのリスト)に「size_list」を入れ、初期表示位置(initiral)を設定する。
         sz_form = SizeForm(szchoice=size_list,initial={'size' : size_init })
