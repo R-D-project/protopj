@@ -173,3 +173,13 @@ STATIC_ROOT = '/var/www/{}/static' .format(PROJECT_NAME)  # 静的ファイル�
 # セッションの設定
 SESSION_COOKIE_AGE = 600  # 10分
 SESSION_SAVE_EVERY_REQUEST = True  # 1リクエストごとにセッション情報更新
+
+# django-nose, coverage configure
+INSTALLED_APPS += ('django_nose',)
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = [
+    '--with-coverage',  # coverage を取る
+    '--cover-html',  # coverage を html で cover/ に出力する
+    # coverage を取得する対象アプリ名を定義する。
+    '--cover-package=searchapp',
+]

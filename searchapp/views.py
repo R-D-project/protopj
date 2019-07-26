@@ -40,7 +40,7 @@ class ResultListView(generic.ListView):
          ⇒最初にサイトを呼び出すときに必ず呼ばれる
         '''
         # 親クラスのメソッド呼び出し、変数contextに格納
-        context = super().get_context_data(self, **kwargs)
+        context = super().get_context_data(**kwargs)
 
         return context
 
