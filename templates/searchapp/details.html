@@ -1,6 +1,7 @@
 {% extends 'searchapp/base.html' %}
 
 {% block content %}
+{% load humanize %}
 <div class ="container" >
     <!--  <q style  ="align: center"> -->
     <!-- 詳細ページが存在しない場合(商品情報削除と詳細ページ表示が同タイミングで発生) -->
@@ -26,7 +27,7 @@
                     </tr>
                     <tr>
                         <th>価格（￥）※税抜き</th>
-                            <td align="right">{{ form.price }}</td>
+                            <td align="right">{{ form.price| intcomma }}</td>
                     </tr>
                     {% endif %}
                 {% endfor %}
@@ -48,7 +49,5 @@
                 </thead>
             </table>
     {% endif %}
-
-    <!-- </q> -->
 </div>
 {% endblock %}
