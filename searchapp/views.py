@@ -216,10 +216,10 @@ class DetailsListView(generic.ListView):
             #     Q(goodsid__exact = str(goodsid)))
 
             # 在庫数を判定し、0か1以上かで'在庫あり','在庫なし'を判定する。
-            for zz_one in zaiko:
-                if zz_one.goodsstocks == 0:
+            for zk_one in zaiko:
+                if zk_one.goodsstocks == 0:
                     zaiko_judg = "在庫なし"
-                elif zz_one.goodsstocks >= 1:
+                elif zk_one.goodsstocks >= 1:
                     zaiko_judg = "在庫あり"
 
         # テンプレートで使用する変数'zaiko_form'に在庫有無の結果を代入する

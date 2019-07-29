@@ -109,7 +109,7 @@ class CategoryTBL(models.Model):
     categoryid = models.CharField(
         verbose_name='カテゴリID',
         primary_key=True,
-        max_length=12,
+        max_length=13,
     )
     highcategoryid = models.ForeignKey(
         'HighCategoryTBL',
@@ -142,7 +142,7 @@ class HighCategoryTBL(models.Model):
     highcategoryid = models.CharField(
         verbose_name='上位カテゴリID',
         primary_key=True,
-        max_length=15,
+        max_length=10,
     )
     highcategoryname = models.CharField(
         verbose_name='上位カテゴリ名',
