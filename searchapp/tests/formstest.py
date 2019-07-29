@@ -1,5 +1,4 @@
 from django.test import TestCase
-
 from searchapp.models import GoodsTBL
 from searchapp.forms import SizeForm
 from searchapp.forms import ColorForm
@@ -7,6 +6,11 @@ from searchapp.views import DetailsListView
 
 
 class GoodsTBLModelTests(TestCase):
+    '''
+    モデル「GoodsTBL」のテストケース
+    '''
+
+
     def test_is_empty(self):
         '''
         何も登録しなければ保存されたレコード数は0個
@@ -15,9 +19,10 @@ class GoodsTBLModelTests(TestCase):
         self.assertEqual(saved_GoodsTBL.count(), 0)
 
 
+
 class SizeFormTests(TestCase):
     '''
-    Sizeformクラスのテスト
+    フォーム「Sizeform」のテストケース
     '''
     def test_valid(self):
         '''
@@ -38,7 +43,7 @@ class SizeFormTests(TestCase):
 
 class ColorFormTests(TestCase):
     '''
-    Colorformクラスのテスト
+    フォーム「colorform」のテストケース
     '''
     def test_valid(self):
         '''
