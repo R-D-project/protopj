@@ -8,33 +8,10 @@
         {% load bootstrap4 %}
         {% bootstrap_css %}
         {% bootstrap_javascript jquery='full' %}
-        <!-- humanizeの呼び出し -->
-        {% load humanize %}
         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <link href="{% static 'css/style.css' %}" rel="stylesheet">
         <script type="text/javascript" src="{% static 'js/test.js' %}"></script>
-        <script type="text/javascript">
-            $(function() {
-                var topBtn = $('#page-top');
-                topBtn.hide();
-                //スクロールが500に達したらボタン表示
-                $(window).scroll(function () {
-                    if ($(this).scrollTop() > 500) {
-                        topBtn.fadeIn();
-                    } else {
-                        topBtn.fadeOut();
-                    }
-                });
-                //スクロールしてトップ
-                topBtn.click(function () {
-                    $('body,html').animate({
-                        scrollTop: 0
-                    }, 500);
-                    return false;
-                });
-            });
-        </script>
-        <title>{% block title %}Search details{% endblock %}</title>
+        <title>{% block title %}ECサイト{% endblock %}</title>
     </head>
     <body>
          <main>

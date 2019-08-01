@@ -19,6 +19,8 @@ from django.urls import include
 
 
 urlpatterns = [
+    # 管理者ページを表示するURLの設定
     path('admin/', admin.site.urls),
+    # ’’(指定なし)の場合にsearchappフォルダのurlsを参照する。
     path('', include('searchapp.urls')),
 ]

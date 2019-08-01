@@ -62,7 +62,7 @@ class DetailsListView(generic.ListView):
     model = GoodsTBL
     # get_querysetメソッドで返すテンプレートタグの名前
     # 何も設定しないと、「object_list」で返す。
-    context_object_name = 'goodsdetails'
+    context_object_name = 'goods_details'
 
     # POSTメソッドを呼び出すのはプルダウンの選択を変更したときのみ
     def post(self, request, *args, **kwargs):
@@ -89,22 +89,30 @@ class DetailsListView(generic.ListView):
         productno = self.request.session.get('g_de_productno', '')
         deleteflag = 0  # 有効状態
 
-        # Qオブジェクトを各変数にインスタンス化
+        # Qオブジェクトを各変数に初期化
         exact_productno = Q()  # 製造番号のQオブジェクト(完全一致)
         exact_salesenddate = Q()  # 販売終了年月日のQオブジェクト(完全一致)
         exact_deleteflag = Q()  # 論理削除フラグのQオブジェクト(完全一致)
+        lte_salesstartdate = Q()  # 販売開始年月日のQオブジェクト(以下)
+        gt_salesenddate = Q()  # 販売終了年月日のQオブジェクト(より大きい)
 
         # Qオブジェクトを使用して条件を作成
+        # TBLの製品番号が前画面から渡された製品番号と完全一致
         exact_productno = Q(productno__exact=str(productno))
+        # TBLの論理削除フラグが1と完全一致
         exact_deleteflag = Q(deleteflag__exact=deleteflag)
+        # TBLの販売開始年月日がメソッド起動時の年月日時分以下(今日より前に販売している商品)
         lte_salesstartdate = Q(salesstartdate__lte=datetime.now().date())
-        gte_salesenddate = Q(salesenddate__gte=datetime.now().date())
+        # TBLの販売終了年月日がメソッド起動時の年月日時分より大きい(今日の時点でまだ販売している商品)
+        gt_salesenddate = Q(salesenddate__gt=datetime.now().date())
+        # TBLの販売終了年月日が空白と完全一致(終了年月日が登録されていないときは終了日未定と取る)
         exact_salesenddate = Q(salesenddate__exact=None)
+
         # クエリを発行
         kekka = GoodsTBL.objects.select_related().filter(
             exact_productno & exact_deleteflag & lte_salesstartdate
-            & (gte_salesenddate | exact_salesenddate))
-        # クエリ発行結果をgoodsdetailsへ格納する。
+            & (gt_salesenddate | exact_salesenddate))
+        # クエリ発行結果をgoods_detailsへ格納する。
         return kekka
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -126,36 +134,43 @@ class DetailsListView(generic.ListView):
         size = self.request.session.get('size', '0')
         color = self.request.session.get('color', '0')
 
-        '''
-        Qオブジェクトの初期設定(インスタンス化)
-        exact_productno = Q()  製造番号(完全一致)
-        exact_deleteflag = Q()  論理削除フラグ(完全一致)
-        lte_salesstartdate = Q()  販売開始年月日(以上)
-        gte_salesenddate = Q()  販売終了年月日(以下)
-        exact_salesenddate = Q()  販売終了年月日(完全一致)
-        exact_sizename = Q()  サイズ(完全一致)
-        exact_colorname = Q()  色(完全一致)
-        '''
+
+        # Qオブジェクトの初期設定(インスタンス化)
+        exact_productno = Q()  # 製造番号が
+        exact_deleteflag = Q()  # 論理削除フラグ(完全一致)
+        lte_salesstartdate = Q()  # 販売開始年月日が今の時間より前であること
+        gt_salesenddate = Q()  # 販売終了年月日(以上)
+        exact_salesenddate = Q()  # 販売終了年月日(完全一致)
+        exact_sizename = Q()  # サイズ(完全一致)
+        exact_colorname = Q()  # 色(完全一致)
+
         # インスタンス化した変数にQオブジェクト(検索条件)を記述
+        # TBLの製品番号が前画面から渡された製品番号と完全一致
         exact_productno = Q(productno__exact=str(productno))
+        # TBLの論理削除フラグが1と完全一致
         exact_deleteflag = Q(deleteflag__exact=int(deleteflag))
+        # TBLの販売開始年月日がメソッド起動時の年月日時分以下(今日より前に販売している商品)
         lte_salesstartdate = Q(salesstartdate__lte=datetime.now().date())
-        gte_salesenddate = Q(salesenddate__gte=datetime.now().date())
+        # TBLの販売終了年月日がメソッド起動時の年月日時分より大きい(今日の時点でまだ販売している商品)
+        gt_salesenddate = Q(salesenddate__gt=datetime.now().date())
+        # TBLの販売終了年月日が空白と完全一致(終了年月日が登録されていないときは終了日未定と取る)
         exact_salesenddate = Q(salesenddate__exact=None)
+        # TBLのサイズ名がプルダウンで指定したサイズ名と完全一致
         exact_sizename = Q(sizename__exact=str(size))
+        # TBLの色名がプルダウンで指定したサイズ名と完全一致
         exact_colorname = Q(colorname__exact=str(color))
 
         '''  start サイズと色のプルダウンの値と初期位置を設定する処理  '''
         # Qオブジェクトで定義した検索条件でクエリを発行する。
         szdist = GoodsTBL.objects.select_related().filter(
             exact_productno & exact_deleteflag & lte_salesstartdate
-            & (gte_salesenddate | exact_salesenddate))\
+            & (gt_salesenddate | exact_salesenddate))\
             .values('sizename').\
             order_by('-sizename').\
             distinct()
         cldist = GoodsTBL.objects.select_related().filter(
             exact_productno & exact_deleteflag & lte_salesstartdate
-            & (gte_salesenddate | exact_salesenddate))\
+            & (gt_salesenddate | exact_salesenddate))\
             .values('colorname')\
             .order_by('-colorname')\
             .distinct()
@@ -191,41 +206,34 @@ class DetailsListView(generic.ListView):
                             initial={'color': color_init},
                             label_suffix='')
         # contextにsz_formとcl_formと入れる
-        context['sizeform'] = sz_form
-        context['colorform'] = cl_form
+        context['size_form'] = sz_form
+        context['color_form'] = cl_form
         '''  end サイズと色のプルダウンの値と初期位置を設定する処理  '''
         '''  start 対象商品(サイズ&色指定)の在庫数判定処理  '''
         # 条件に当てはまる数を確認(1件あるかないか)
-        zai_kaku = GoodsTBL.objects.select_related().filter(
+        zaiko = GoodsTBL.objects.select_related().filter(
             exact_sizename & exact_colorname & exact_productno
             & exact_deleteflag & lte_salesstartdate
-            & (gte_salesenddate | exact_salesenddate))\
-            .count()
+            & (gt_salesenddate | exact_salesenddate))
+
+        # プライマリキーを使用して一意検索を掛ければfor文で回さなくても良い
+        # zaiko = GoodsTBL.objects.select_related().get(
+        #     Q(goodsid__exact = str(goodsid)))
 
         # 対象商品のサイズと色のパターンが存在しているか判定
-        if int(zai_kaku) != 0:
+        if int(zaiko.count()) != 0:
             # 対象商品のパターンが存在した場合
-            # 製造番号、色、サイズで商品を特定する。
-            # (プライマリキーでは無いため、内部では1件なのかが分からない
-            zaiko = GoodsTBL.objects.select_related().filter(
-                exact_productno & exact_deleteflag & lte_salesstartdate
-                & (gte_salesenddate | exact_salesenddate))
+            # 在庫数を判定し、0か1以上かで'在庫あり','在庫無'を判定する。
+            print(zaiko[0].goodsstocks)
+            if zaiko[0].goodsstocks == 0:
+                zaiko_judg = '在庫無'
+            else:
+                zaiko_judg = '在庫あり'
 
-            # プライマリキーを使用して一意検索を掛ければfor文で回さなくても良い
-            # zaiko = GoodsTBL.objects.select_related().get(
-            #     Q(goodsid__exact = str(goodsid)))
-
-            # 在庫数を判定し、0か1以上かで'在庫あり','在庫なし'を判定する。
-            for zk_one in zaiko:
-                if zk_one.goodsstocks == 0:
-                    zaiko_judg = "在庫なし"
-                elif zk_one.goodsstocks >= 1:
-                    zaiko_judg = "在庫あり"
 
         # テンプレートで使用する変数'zaiko_form'に在庫有無の結果を代入する
         context['zaiko_form'] = zaiko_judg
         '''  end 対象商品(サイズ&色指定)の在庫数判定処理  '''
-
         # 戻り値としてcontextを返す。
         return context
 

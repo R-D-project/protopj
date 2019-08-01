@@ -1,3 +1,4 @@
+// TODO(勝俣)selectChangeは使用しないため、UTテスト後に削除予定
 function selectChange(){
 	//サイズと色が選択されているかを判定する(if文追加)
 	sizef = document.selectform.sizeselect;
@@ -11,11 +12,14 @@ function selectChange(){
 
 function selChange(){
 	//サイズと色が選択されているかを判定する(if文追加)
-	sizef = document.selform.size;
-	sizeindex = sizef.selectedIndex;
-	colorf = document.selform.color;
-	colorindex = colorf.selectedIndex;
 
+	// TODO(勝俣)UTテスト後に削除予定
+	//sizef = document.selform.size;
+	//sizeindex = sizef.selectedIndex;
+	//colorf = document.selform.color;
+	//colorindex = colorf.selectedIndex;
+
+	//form名がselformをsubmit
 	document.selform.submit();
 
 }

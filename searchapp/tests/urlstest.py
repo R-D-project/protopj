@@ -1,70 +1,38 @@
+"""
+UnitTestの書き方
+・アプリケーションの下に test から始まるファイルを作る
+・django.test.TestCaseを継承したクラスを作る
+・メソッド名をtestから始める
+
+
+メソッド                 確認事項
+assertEqual(a, b)        a == b
+assertNotEqual(a, b)     a != b
+assertTrue(x)            bool(x) is True
+assertFalse(x)           bool(x) is False
+
+例外が発生したらOK
+def test_exception2(self):
+self.assertRaises(Exception, func)
+
+"""
 from django.test import TestCase
-from searchapp.models import GoodsTBL
-from searchapp.forms import SizeForm
-from searchapp.forms import ColorForm
+from django.test.utils import override_settings
+from django.urls import resolve
+from django.urls import path
 from searchapp.views import DetailsListView
 
+class UrlResolveTests(TestCase):
+    """
+    URL解決のテスト
+    """
 
-class GoodsTBLModelTests(TestCase):
-    '''
-    モデル「GoodsTBL」のテストケース
-    '''
+    @override_settings(DEBUG=True) #テスト実行時にデバッグ=Trueで実行
 
-
-    def test_is_empty(self):
+    def test_url_resolves_indexview(self):
         '''
-        何も登録しなければ保存されたレコード数は0個
+        path:'/details/'で、クラスDetailsListViewを呼び出している事を検証
         '''
-        saved_GoodsTBL = GoodsTBL.objects.all()
-        self.assertEqual(saved_GoodsTBL.count(), 0)
-
-
-
-class SizeFormTests(TestCase):
-    '''
-    フォーム「Sizeform」のテストケース
-    '''
-    def test_valid(self):
-        '''
-        SizeForm1.正常に入力した場合にエラーにならないことを検証する
-        '''
-        parmas = []
-        parmas.append(('S','S'))
-        form = SizeForm(szchoice=parmas)
-        self.assertTrue(form.is_valid())
-
-    def test_either1(self):
-        '''
-        SizeForm2.何も入力していない場合にエラーとなることを検証する
-        '''
-        parmas = dict()
-        form = SizeForm(parmas)
-        self.assertTrue(form.is_valid())
-
-class ColorFormTests(TestCase):
-    '''
-    フォーム「colorform」のテストケース
-    '''
-    def test_valid(self):
-        '''
-        ColorForm1.正常に入力した場合にエラーにならないことを検証する
-        '''
-        parmas = {'赤':'赤','黒':'黒'}
-        form = ColorForm(clchoice=parmas)
-        self.assertTrue(form.is_valid())
-
-    def test_either1(self):
-        '''
-        ColorForm2.何も入力していない場合にエラーとなることを検証する
-        '''
-        parmas = dict()
-        form = ColorForm(parmas)
-        self.assertTrue(form.is_valid())
-
-    def test_either2(self):
-        '''
-        ColorForm3.正常に入力した場合にエラーにならないことを検証する
-        '''
-        parmas = dict(color='赤')
-        form = ColorForm(parmas)
-        self.assertTrue(form.is_valid())
+        found = resolve('/details/')
+        test = DetailsListView.__name__
+        self.assertEqual(found.func.__name__, test, '呼び出しているVIEWが想定と異なる')

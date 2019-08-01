@@ -5,7 +5,8 @@
 from django.db import models
 
 
-# 新規テーブル作成　※１クラス＝１テーブルに該当
+# 新規テーブル作成
+# 1クラス＝1テーブルに該当
 class GoodsTBL(models.Model):
     '''
     商品マスタの設定
@@ -17,10 +18,16 @@ class GoodsTBL(models.Model):
         db_table = 'goodstbl'  # テーブル名
         verbose_name_plural = '商品マスタ'  # 管理画面で表示されるテーブル名
         # 一意な組み合わせを定義
+        # 設計上、製品番号、サイズ、色の組み合わせが重複させないために定義する。
         unique_together = ('productno', 'sizename', 'colorname')
 
     # テーブルのカラムに対応するフィールドを定義
-    # max_lengthは単純な文字数。半角全角、英数字関係なく合計でその文字数入るという設定
+    # max_length:単純な文字数。半角全角、英数字関係なく合計文字数入るという設定
+    # primary_key=True:プライマリキーとして設定する。
+    # null=True:TBL登録時に空白を許容する。
+    # null=Flase:登録時に空白を許容しない。(デフォルト)
+    # blank=True:フォームからの入力(登録)では空白を許容する。
+    # blank=Flase:フォームからの入力(登録)では空白を許容しない。(デフォルト)
     goodsid = models.CharField(
         verbose_name='商品ID',
         primary_key=True,
@@ -29,11 +36,12 @@ class GoodsTBL(models.Model):
     productno = models.CharField(
         verbose_name='製品番号',
         max_length=9,
-        null=False,
     )
+    # カテゴリIDはCategoryTBLのcategoryidを外部キーとして設定する。
     categoryid = models.ForeignKey(
         'CategoryTBL',
         to_field='categoryid',
+        # 外部キーであるCategoryTBLからcategoryidを削除するときにGoodsTBLで指定している同一categoryidを削除
         on_delete=models.CASCADE,
         verbose_name='カテゴリID'
     )
@@ -87,11 +95,13 @@ class GoodsTBL(models.Model):
     )
     deleteflag = models.IntegerField(
         verbose_name='論理削除フラグ',
-        default='1',
+        # フラグの初期値を0にする。
+        default='0',
     )
 
     # 管理サイトに表示させる文字列を定義
     def __str__(self):
+        # adminページで表示するときの文字列を返す。
         return '[' + self.goodsid + ']' +self.goodsname
 
 
@@ -125,6 +135,7 @@ class CategoryTBL(models.Model):
 
     # 管理サイトに表示させる文字列を定義
     def __str__(self):
+        # adminページで表示するときの文字列を返す。
         return '[' + self.categoryid + ']' + self.categoryname
 
 
@@ -151,4 +162,5 @@ class HighCategoryTBL(models.Model):
 
     # 管理サイトに表示させる文字列を定義
     def __str__(self):
+        # adminページで表示するときの文字列を返す。
         return '[' + self.highcategoryid + ']' +self.highcategoryname

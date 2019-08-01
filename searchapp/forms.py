@@ -8,9 +8,11 @@ class SizeForm(forms.Form):
     '''
         サイズのプルダウンを設定するクラス
     '''
-    # __init__はインスタンス化されたときに起動する。
-    # プルダウンの値をフォーム作成時に格納する
     def __init__(self, szchoice, *args, **kwargs):
+        '''
+        __init__はインスタンス化されたときに起動する。
+        プルダウンの値をインスタンス化(フォーム作成時)に格納する
+        '''
         # 親クラス(今回は自分自身)を呼び、フィールド情報を取得する。
         super(SizeForm, self).__init__(*args, **kwargs)
         # sizeフィールドのchoices(プルダウンの値)にリスト変数szchoiceを代入
@@ -27,7 +29,7 @@ class SizeForm(forms.Form):
                 # プルダウンの値が変更されたときJSのselChangeを呼び出す
                 'onChange': 'selChange()',
                 'id': 'size_id',  # selectタグのidを'color_id'にする
-                'tabindex': '1',  # tabindexを2にする
+                'tabindex': '1',  # tabindexを1にする
                 },
             ),
     )
@@ -37,9 +39,11 @@ class ColorForm(forms.Form):
     '''
         色のプルダウンを設定するクラス
     '''
-    # __init__はインスタンス化されたときに起動する。
-    # プルダウンの値をフォーム作成時に格納する
     def __init__(self, clchoice, *args, **kwargs):
+        '''
+        __init__はインスタンス化されたときに起動する。
+        プルダウンの値をインスタンス化(フォーム作成時)に格納する
+        '''
         # 親クラス(今回は自分自身)を呼び、フィールド情報を取得する。
         super(ColorForm, self).__init__(*args, **kwargs)
         # colorフィールドのchoices(プルダウンの値)にリスト変数zlchoiceを代入

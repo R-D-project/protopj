@@ -1,53 +1,55 @@
-{% extends 'searchapp/base.html' %}
-
-{% block content %}
+{% extends 'searchapp/base.html' %} {% block content %}
+<!-- humanizeの呼び出し -->
 {% load humanize %}
-<div class ="container" >
-    <!--  <q style  ="align: center"> -->
-    <!-- 詳細ページが存在しない場合(商品情報削除と詳細ページ表示が同タイミングで発生) -->
-    {% if goodsdetails|length == 0 %}
-        <p>検索結果が存在しません。</p>
+<div class="container mar">
+	{% if goods_details|length == 0 %}
+	   <!-- 詳細ページが存在しない場合(商品情報削除と詳細ページ表示が同タイミングで発生) -->
+	   <p>検索結果が存在しません。</p>
     <!-- 詳細ページが存在する場合 -->
     {% else %}
-            <table class="bg-white table table-bordered">
-                <thead class="thead-dark">
-                {% for form in goodsdetails %}
-                    {% if forloop.first %}
-                    <tr>
-                        <th>上位カテゴリ名</th>
-                        <td>{{ form.categoryid.highcategoryid.highcategoryname }}</td>
-                    </tr>
-                    <tr>
-                        <th>カテゴリ名</th>
-                            <td>{{ form.categoryid.categoryname }}</td>
-                    </tr>
-                    <tr>
-                        <th>商品名</th>
-                            <td id = "goodsname">{{ form.goodsname }}</td>
-                    </tr>
-                    <tr>
-                        <th>価格（￥）※税抜き</th>
-                            <td align="right">{{ form.price| intcomma }}</td>
-                    </tr>
-                    {% endif %}
-                {% endfor %}
-                    <form action = "" method = "POST" name = "selform">
-                    {% csrf_token %}
-                        {{ sizeform }}
-                        {{ colorform }}
-                    </form>
-                    <tr>
-                        <th>在庫有無</th>
-                            <td id ="zaiko">
-                            {% if zaiko_form|length == 0 %}
-                            -
-                            {% else %}
-                                {{ zaiko_form }}
-                            {% endif %}
-                            </td>
-                    </tr>
-                </thead>
-            </table>
-    {% endif %}
+	<table class="bg-white table table-bordered">
+		<thead class="thead-dark">
+			{% for form in goods_details %}
+			{% if forloop.first %}
+			<tr>
+				<th>上位カテゴリ名</th>
+				<td>{{ form.categoryid.highcategoryid.highcategoryname }}</td>
+			</tr>
+			<tr>
+				<th>カテゴリ名</th>
+				<td>{{ form.categoryid.categoryname }}</td>
+			</tr>
+			<tr>
+				<th>商品名</th>
+				<td id="goodsname">{{ form.goodsname }}</td>
+			</tr>
+			<tr>
+				<th>価格（￥）※税抜き</th>
+				<!-- intcomma(数値3桁区切りで','を打つ) -->
+				<td align="right">{{ form.price| intcomma }}</td>
+			</tr>
+			{% endif %}
+			{% endfor %}
+			<form action="" method="POST" name="selform">{% csrf_token %}
+				{{ size_form }}
+				{{ color_form }}
+			</form>
+			<tr>
+				<th>在庫有無</th>
+				<td id="zaiko">
+				{% if zaiko_form|length == 0 %}
+				-
+				{% else %}
+				    {%if zaiko_form == '在庫無' %}
+				    <font color="red">{{zaiko_form}}</font>
+				    {% else %}
+				    <font color="black"> {{ zaiko_form}}</font>
+				    {% endif %}
+				{% endif %}
+				</td>
+			</tr>
+		</thead>
+	</table>
+	{% endif %}
 </div>
 {% endblock %}

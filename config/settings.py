@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'searchapp.apps.SearchappConfig',  # アプリ紐付け
     'bootstrap4',  # bootstrap4紐付け
-    'django.contrib.humanize',  # humanize紐付け
+    'django.contrib.humanize',  # humanize紐付け(数値を3桁区切りにする際に使用する。)
 ]
 
 # 数値を区切る桁数を設定する。
@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# 初めに参照するURLCONFのルートパス設定
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -72,6 +73,7 @@ TEMPLATES = [
     },
 ]
 
+# TODO(勝俣)何の設定をしているか不明であるため要調査
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
@@ -107,6 +109,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
+# TODO(勝俣)何の設定をしているか不明。要調査
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME':
@@ -151,8 +154,10 @@ LOGGING = {
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
+# 言語をja(日本語)に設定する。
 LANGUAGE_CODE = 'ja'
 
+# 時間をAsia/Tokyo(日本)に設定する。(now等の時間取得で使用する)
 TIME_ZONE = 'Asia/Tokyo'
 
 USE_I18N = True
