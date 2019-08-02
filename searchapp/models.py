@@ -3,6 +3,7 @@
 '''
 
 from django.db import models
+from django.core import validators
 
 
 # 新規テーブル作成
@@ -97,6 +98,8 @@ class GoodsTBL(models.Model):
         verbose_name='論理削除フラグ',
         # フラグの初期値を0にする。
         default='0',
+        validators=[validators.MinValueValidator(0),
+                    validators.MaxValueValidator(1)]
     )
 
     # 管理サイトに表示させる文字列を定義

@@ -12,6 +12,7 @@ from searchapp.views import DetailsListView
 def RecordAdd():
     '''
     各TBLに1件ずつデータを追加する。
+    サイズ(S) 、色(黒)
     '''
     Hcate = HighCategoryTBL(highcategoryid='category01',
                             highcategoryname='衣類')
@@ -34,6 +35,10 @@ def RecordAdd():
 
 
 def RecordAdd2():
+    '''
+    商品マスタに1件データを追加する。
+    サイズ(M) 、色(黒)
+    '''
     Hcate = HighCategoryTBL(highcategoryid='category01',
                             highcategoryname='衣類')
     Cate = CategoryTBL(categoryid='category01A01',
@@ -50,6 +55,7 @@ def RecordAdd2():
                      deleteflag='0')
     Goods2.save()
 
+
 class DetailsListViewTest(TestCase):
 
     @override_settings(DEBUG=True) #テスト実行時にデバッグ=Trueで実行
@@ -63,8 +69,6 @@ class DetailsListViewTest(TestCase):
         RecordAdd()
         # 疑似的なsessionを作成し、'g_de_productno'に存在する製品番号を代入する。
         session = self.client.session
-        # po = self.client.post
-        # po['search_char'] = 'aaaa'
         session['g_de_productno'] = 'product01'
         session.save()
         # クライアント側からgetメソッドでリクエストされる。
@@ -92,7 +96,7 @@ class DetailsListViewTest(TestCase):
         session['g_de_productno'] = 'product01'
         session.save()
 
-        # クライアント側からpostメソッドでリクエストされる。
+        # サイズのプルダウンのみ変更し、色プルダウンは変更しない場合のテスト
         # サイズプルダウンを初期位置から'S'に変更した状態でpostする
         sizedata = {
             'size': 'S',
@@ -100,9 +104,8 @@ class DetailsListViewTest(TestCase):
         response = self.client.post(reverse('searchapp:details'), sizedata)
         # レスポンスされたステータスコードを確認し、200(正常終了)であることを確認する。
         self.assertEqual(response.status_code,200)
-        print(type(response))
 
-        # クライアント側からpostメソッドでリクエストされる。
+        # 色プルダウンのみ変更し、サイズプルダウンは変更しない場合のテスト
         # 色プルダウンを初期位置から'黒'に変更した状態でpostする
         colordata = {
             'color': '黒',
@@ -111,41 +114,64 @@ class DetailsListViewTest(TestCase):
         # レスポンスされたステータスコードを確認し、200(正常終了)であることを確認する。
         self.assertEqual(response.status_code,200)
 
-        # クライアント側からpostメソッドでリクエストされる。
+        # サイズ、色両方のプルダウンが初期位置ではない場合のテスト
+        # 在庫数を判定し、context['zaiko_form']に結果が反映されていることを確認する。
         # サイズ、色のプルダウンを初期位置から'S','黒'に変更した状態でpostする。
         data = {
             'size': 'S',
             'color': '黒',
         }
         response = self.client.post(reverse('searchapp:details'), data)
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.context['zaiko_form'], '在庫あり')
+        self.assertEqual(response.status_code, 200)
 
 
         # 在庫数0のデータを追加
         RecordAdd2()
-        # クライアント側からpostメソッドでリクエストされる。
-        # サイズ「S」、色「黒」の在庫数0のデータを参照し、在庫数が0で帰ってくることを確認
+        # サイズ、色両方のプルダウンが初期位置ではない場合のテスト
+        # 在庫数を判定し、context['zaiko_form']に結果が反映されていることを確認する。
+        # サイズ、色のプルダウンを初期位置から'M','黒'に変更した状態でpostする。
         zaiko0data = {
             'size': 'M',
             'color': '黒',
         }
-
-
         response = self.client.post(reverse('searchapp:details'), zaiko0data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['zaiko_form'], '在庫無')
+
+        # 指定した色、サイズのパターンが存在しない場合のテスト
+        # 在庫数を判定し、context['zaiko_form']に結果が反映されていることを確認する。
+        # サイズ、色のプルダウンを初期位置から'S','赤'(存在しないパターン)に変更した状態でpostする。
+        NotPattern = {
+            'size': 'S',
+            'color': '赤',
+        }
+        response = self.client.post(reverse('searchapp:details'), NotPattern)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['zaiko_form'], '-')
+
+
+
+    def test_No_record(self):
+        '''
+        前画面から受け取った製品番号のレコードが1件も存在しない場合
+        '''
+        # テーブルにデータを1件追加する。
+        RecordAdd()
+        # 疑似的なsessionを作成し、'g_de_productno'に存在しない製品番号を代入する。
+        session = self.client.session
+        session['g_de_productno'] = 'product02'
+        session.save()
+
+        response = self.client.get(reverse('searchapp:details'))
         self.assertEqual(response.status_code,200)
-        self.assertEqual(response.context['zaiko_form'],'在庫無')
-
-    def test_3(self):
-        '''
-        3.前画面から受け取った値(製品番号)がテーブルに存在していないときの挙動を確認する。
-        '''
-
-    def test_4(self):
-        '''
-        4.プルダウンの内容が変更(ユーザ動作)したときに在庫判定が正しく出来ることを確認する。
-        '''
+        self.assertEqual(response.context['goods_details'].count(),0)
 
     def test_coverage(self):
+        '''
+        カバレッジテスト
+        一覧画面のResultListViewを通すためのメソッド
+        '''
         session = self.client.session
         session['size'] = 'S'
         session['color'] = '黒'
@@ -153,7 +179,20 @@ class DetailsListViewTest(TestCase):
         data = {
             'g_de_productno': 'product01',
         }
+        # 商品名のリンクを押したときの処理テスト
+        # sessionに['size']['color']が存在する場合は削除してから次画面へ遷移する。
         response = self.client.post(reverse('searchapp:result'),data)
         self.assertEqual(response.status_code,302)
         response = self.client.get(reverse('searchapp:result'))
         self.assertEqual(response.status_code,200)
+
+    def test_no_postdata(self):
+        # テーブルにデータを1件追加する。
+        RecordAdd()
+        # 疑似的なsessionを作成し、'g_de_productno'に存在する製品番号を代入する。
+        session = self.client.session
+        session['g_de_productno'] = 'product01'
+        response = self.client.post(reverse('searchapp:details'))
+        self.assertEqual(response.context['goods_details'].count(),0)
+
+

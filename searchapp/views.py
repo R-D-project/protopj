@@ -25,7 +25,6 @@ class ResultListView(generic.ListView):
         クライアント側からのリクエストが'POST'の場合に実行される処理
         次画面に必要な情報をsessionに格納してリダイレクトする。
         '''
-        print(request.POST.get('productno', None))
         request.session['g_de_productno'] = request.POST.get('productno', None)
         if 'size' in request.session:
             del request.session['size']
@@ -195,20 +194,19 @@ class DetailsListView(generic.ListView):
 
         # フォームをインスタンス化し、choice(プルダウンのリスト)に
         # 「size_list」を入れ、初期表示位置(initiral)を設定する。
-        # デフォルト指定されているラベル後ろの「:」を「(空白)」に変更する。
         sz_form = SizeForm(szchoice=size_list,
                            initial={'size': size_init},
-                           label_suffix='')
+                           )
         # フォームをインスタンス化し、choice(プルダウンのリスト)に
         # 「color_list」を入れ、初期表示位置(initiral)を設定する。
-        # デフォルト指定されているラベル後ろの「:」を「(空白)」に変更する。
         cl_form = ColorForm(clchoice=color_list,
                             initial={'color': color_init},
-                            label_suffix='')
+                            )
         # contextにsz_formとcl_formと入れる
         context['size_form'] = sz_form
         context['color_form'] = cl_form
         '''  end サイズと色のプルダウンの値と初期位置を設定する処理  '''
+
         '''  start 対象商品(サイズ&色指定)の在庫数判定処理  '''
         # 条件に当てはまる数を確認(1件あるかないか)
         zaiko = GoodsTBL.objects.select_related().filter(
@@ -224,7 +222,6 @@ class DetailsListView(generic.ListView):
         if int(zaiko.count()) != 0:
             # 対象商品のパターンが存在した場合
             # 在庫数を判定し、0か1以上かで'在庫あり','在庫無'を判定する。
-            print(zaiko[0].goodsstocks)
             if zaiko[0].goodsstocks == 0:
                 zaiko_judg = '在庫無'
             else:
@@ -234,6 +231,17 @@ class DetailsListView(generic.ListView):
         # テンプレートで使用する変数'zaiko_form'に在庫有無の結果を代入する
         context['zaiko_form'] = zaiko_judg
         '''  end 対象商品(サイズ&色指定)の在庫数判定処理  '''
+        aa = 'あいうえお'
+        bb = 'abcde'
+        cc = 'あaいbうcえdおe'
+        dd = 'あい'
+        ee = '勝俣太陽'
+        print(len(aa.encode('utf-8')))
+        print(len(bb.encode('utf-8')))
+        print(len(cc.encode('utf-8')))
+        print(len(dd.encode('utf-8')))
+        print(len(ee.encode('utf-8')))
+        print(sz_form)
         # 戻り値としてcontextを返す。
         return context
 

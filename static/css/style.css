@@ -30,8 +30,22 @@
 }
 
 body {
-	/* width:1080px; */
+	font-family: "Meiryo";
+	font-size: medium;
 	width: 75%;
+	max-width:1080px;
 	position: relative;
 	background-color: #d7ffff;
+}
+
+.table {
+	margin-bottom: 5px;
+}
+
+table th {
+	text-align:center;
+}
+
+h1 {
+    margin-bottom: 5px;
 }

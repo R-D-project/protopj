@@ -2,7 +2,7 @@
 入力フォームの設定ファイル
 '''
 from django import forms
-
+from django.core.exceptions import ValidationError
 
 class SizeForm(forms.Form):
     '''
@@ -22,6 +22,7 @@ class SizeForm(forms.Form):
     size = forms.ChoiceField(
         choices=(),  # __init__で定義するため、ここでは空白を設定する。
         label='サイズ',
+        label_suffix='',  # デフォルト指定されているラベル後ろの「:」を「(空白)」に変更する。
         disabled=False,  # この要素を有効化(False)
         widget=forms.Select(
             # HTMLのselectタグに各設定を定義する。
@@ -53,6 +54,7 @@ class ColorForm(forms.Form):
     color = forms.ChoiceField(
         choices=(),  # __init__で定義するため、ここでは空白を設定する。
         label='色',
+        label_suffix='',  # デフォルト指定されているラベル後ろの「:」を「(空白)」に変更する。
         disabled=False,  # この要素を有効化(False)
         widget=forms.Select(
             # HTMLのselectタグに各設定を定義する。
@@ -62,4 +64,26 @@ class ColorForm(forms.Form):
                 'tabindex': '2',  # tabindexを2にする
                 },
             ),
+    )
+
+
+class ZaikoForm(forms.Form):
+    '''
+    バリデーションチェックのテスト用フォーム
+    '''
+    def clean_zaiko(self):
+        '''
+        clean_zaiko
+        バリデーションチェック用のメソッド
+        '''
+        zaiko = self.cleaned_data['zaiko']
+        raise ValidationError("意味不明なエラー")
+        return zaiko
+
+
+    zaiko = forms.IntegerField(
+        initial='',
+        label='在庫数',
+        label_suffix='',
+        required=False,
     )

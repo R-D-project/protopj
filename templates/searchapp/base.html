@@ -8,13 +8,13 @@
         {% load bootstrap4 %}
         {% bootstrap_css %}
         {% bootstrap_javascript jquery='full' %}
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <link href="{% static 'css/style.css' %}" rel="stylesheet">
         <script type="text/javascript" src="{% static 'js/test.js' %}"></script>
         <title>{% block title %}ECサイト{% endblock %}</title>
     </head>
     <body>
          <main>
+         <h1 id="site-name"><a href="{% url 'admin:index' %}">管理者画面</a></h1>
          	<!-- オーバーライド対象：content=子テンプレートのブロック名 -->
             {% block content %}
             {% endblock %}
