@@ -9,7 +9,7 @@ from .forms import SizeForm
 from .forms import ColorForm
 from .models import GoodsTBL
 
-
+# ResultListViewはUT完了後削除する。
 class ResultListView(generic.ListView):
     '''
     一覧表示画面用のクラス
@@ -117,6 +117,9 @@ class DetailsListView(generic.ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         '''
         テンプレートで使用するデータをcontextデータに格納する処理
+        size_form:サイズのプルダウンで表示される値を格納する。
+        color_form:色のプルダウンで表示される値を格納する。
+        zaiko_form:在庫数の判定結果の値を格納する
         '''
         # 親クラスのメソッド呼び出し、変数contextに格納
         context = super().get_context_data(**kwargs)
@@ -134,7 +137,7 @@ class DetailsListView(generic.ListView):
         color = self.request.session.get('color', '0')
 
 
-        # Qオブジェクトの初期設定(インスタンス化)
+        # Qオブジェクトを各変数に初期化
         exact_productno = Q()  # 製造番号が
         exact_deleteflag = Q()  # 論理削除フラグ(完全一致)
         lte_salesstartdate = Q()  # 販売開始年月日が今の時間より前であること
@@ -164,9 +167,9 @@ class DetailsListView(generic.ListView):
         szdist = GoodsTBL.objects.select_related().filter(
             exact_productno & exact_deleteflag & lte_salesstartdate
             & (gt_salesenddate | exact_salesenddate))\
-            .values('sizename').\
-            order_by('-sizename').\
-            distinct()
+            .values('sizename')\
+            .order_by('-sizename')\
+            .distinct()
         cldist = GoodsTBL.objects.select_related().filter(
             exact_productno & exact_deleteflag & lte_salesstartdate
             & (gt_salesenddate | exact_salesenddate))\
@@ -182,13 +185,16 @@ class DetailsListView(generic.ListView):
         size_list.append((size_init, 'サイズをお選びください'))
         color_list.append((color_init, '色をお選びください'))
 
+        # 対象製品のサイズ(重複削除済み)を1件ずつ読み込みプルダウンのフォームに格納する。
         for sz_one in szdist:
             size_list.append((sz_one['sizename'], sz_one['sizename']))
+            # 対象のサイズ名が、ユーザが選択したサイズ名と同一であれば、そのサイズの位置を初期位置とする。
             if sz_one['sizename'] == size:
                 size_init = size
-
+        # 対象製品の色(重複削除済み)を1件ずつ読み込みプルダウンのフォームに格納する。
         for cl_one in cldist:
             color_list.append((cl_one['colorname'], cl_one['colorname']))
+            # 対象の色名が、ユーザが選択した色名と同一であれば、その色の位置を初期位置とする。
             if cl_one['colorname'] == color:
                 color_init = color
 
@@ -231,17 +237,6 @@ class DetailsListView(generic.ListView):
         # テンプレートで使用する変数'zaiko_form'に在庫有無の結果を代入する
         context['zaiko_form'] = zaiko_judg
         '''  end 対象商品(サイズ&色指定)の在庫数判定処理  '''
-        aa = 'あいうえお'
-        bb = 'abcde'
-        cc = 'あaいbうcえdおe'
-        dd = 'あい'
-        ee = '勝俣太陽'
-        print(len(aa.encode('utf-8')))
-        print(len(bb.encode('utf-8')))
-        print(len(cc.encode('utf-8')))
-        print(len(dd.encode('utf-8')))
-        print(len(ee.encode('utf-8')))
-        print(sz_form)
         # 戻り値としてcontextを返す。
         return context
 

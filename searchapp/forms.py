@@ -27,8 +27,8 @@ class SizeForm(forms.Form):
         widget=forms.Select(
             # HTMLのselectタグに各設定を定義する。
             attrs={
-                # プルダウンの値が変更されたときJSのselChangeを呼び出す
-                'onChange': 'selChange()',
+                # プルダウンの値が変更されたときform名'selform'をsubmitする。
+                'onChange': 'document.selform.submit()',
                 'id': 'size_id',  # selectタグのidを'color_id'にする
                 'tabindex': '1',  # tabindexを1にする
                 },
@@ -58,32 +58,11 @@ class ColorForm(forms.Form):
         disabled=False,  # この要素を有効化(False)
         widget=forms.Select(
             # HTMLのselectタグに各設定を定義する。
-            attrs={  # プルダウンの値が変更されたときJSのselChangeを呼び出す
-                'onChange': 'selChange()',
+            attrs={
+                # プルダウンの値が変更されたときform名'selform'をsubmitする。
+                'onChange': 'document.selform.submit()',
                 'id': 'color_id',  # selectタグのidを'color_id'にする
                 'tabindex': '2',  # tabindexを2にする
                 },
             ),
-    )
-
-
-class ZaikoForm(forms.Form):
-    '''
-    バリデーションチェックのテスト用フォーム
-    '''
-    def clean_zaiko(self):
-        '''
-        clean_zaiko
-        バリデーションチェック用のメソッド
-        '''
-        zaiko = self.cleaned_data['zaiko']
-        raise ValidationError("意味不明なエラー")
-        return zaiko
-
-
-    zaiko = forms.IntegerField(
-        initial='',
-        label='在庫数',
-        label_suffix='',
-        required=False,
     )

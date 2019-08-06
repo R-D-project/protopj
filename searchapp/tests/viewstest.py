@@ -52,8 +52,52 @@ def RecordAdd2():
                      price='4500',
                      goodsstocks='0',
                      salesstartdate='2019-07-29',
+                     salesenddate='2020-07-29',
                      deleteflag='0')
     Goods2.save()
+
+def RecordAdd3():
+    '''
+    商品マスタに1件データを追加する。（論理削除フラグ=1)
+    サイズ(L) 、色(赤)
+    '''
+    Hcate = HighCategoryTBL(highcategoryid='category01',
+                            highcategoryname='衣類')
+    Cate = CategoryTBL(categoryid='category01A01',
+                       categoryname='スカート',
+                       highcategoryid=Hcate)
+    Goods3 = GoodsTBL(goodsid='product01L003',
+                     categoryid=Cate,
+                     productno='product01',
+                     sizename='L',
+                     colorname='赤',
+                     price='4500',
+                     goodsstocks='0',
+                     salesstartdate='2019-07-29',
+                     deleteflag='1')
+    Goods3.save()
+
+def RecordAdd4():
+    '''
+    商品マスタに1件データを追加する。（販売終了年月日が7月末(終わっている))
+    サイズ(S) 、色(赤)
+    '''
+    Hcate = HighCategoryTBL(highcategoryid='category01',
+                            highcategoryname='衣類')
+    Cate = CategoryTBL(categoryid='category01A01',
+                       categoryname='スカート',
+                       highcategoryid=Hcate)
+    Goods4 = GoodsTBL(goodsid='product01S003',
+                     categoryid=Cate,
+                     productno='product01',
+                     sizename='S',
+                     colorname='赤',
+                     price='4500',
+                     goodsstocks='0',
+                     salesstartdate='2019-07-29',
+                     salesenddate='2019-07-31',
+                     deleteflag='0')
+    Goods4.save()
 
 
 class DetailsListViewTest(TestCase):
@@ -185,14 +229,3 @@ class DetailsListViewTest(TestCase):
         self.assertEqual(response.status_code,302)
         response = self.client.get(reverse('searchapp:result'))
         self.assertEqual(response.status_code,200)
-
-    def test_no_postdata(self):
-        # テーブルにデータを1件追加する。
-        RecordAdd()
-        # 疑似的なsessionを作成し、'g_de_productno'に存在する製品番号を代入する。
-        session = self.client.session
-        session['g_de_productno'] = 'product01'
-        response = self.client.post(reverse('searchapp:details'))
-        self.assertEqual(response.context['goods_details'].count(),0)
-
-

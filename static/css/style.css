@@ -17,8 +17,6 @@
 }
 
 .mar {
-	/* 余白の設定(上下30px、左右20%) */
-	margin: 30px 25%;
     /* position:ボックスの基準位置が相対位置か絶対位置かを指定する。
        static:配置方法指定なし。
        relative:相対配置。
@@ -26,7 +24,11 @@
        fixed:絶対位置(absoluteと同じ)。スクロールしても位置が固定されたまま。
     */
 	position:absolute;
-
+    /* 余白の設定(上下30px、左右20%) */
+    margin: 30px 30%;
+    /* top: 50%;
+    left: 50%;
+    tranform: translate(-50%,-50%); */
 }
 
 body {

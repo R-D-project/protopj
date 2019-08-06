@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',  # humanize紐付け(数値を3桁区切りにする際に使用する。)
 ]
 
+# humanizeのappで指定可能。
 # 数値を区切る桁数を設定する。
 NUMBER_GROUPING = 3
 
@@ -80,6 +81,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+# 今回はsqlite3を使用しないためコメント化
 """
 DATABASES = {
     'default': {
@@ -109,23 +111,27 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
-# TODO(勝俣)何の設定をしているか不明。要調査
+# パスワードのバリデーションチェック機能
 AUTH_PASSWORD_VALIDATORS = [
+    # 登録パスワードがusername,first_name,last_name,emailと類似していないかチェックする。
     {
         'NAME':
             'django.contrib.auth.password_validation.'
             'UserAttributeSimilarityValidator',
     },
+    # minimumLengthValidator:パスワードの最小の長さを設定できる。
     {
         'NAME':
             'django.contrib.auth.password_validation.'
             'MinimumLengthValidator',
     },
+    # CommonPasswordValidator:よくあるパスワードのリスト.txtと一致したらエラーを出す。
     {
         'NAME':
             'django.contrib.auth.password_validation.'
             'CommonPasswordValidator',
     },
+    # NumericPasswordValidator:数値のみでパスワードが構成されていないかチェックする。
     {
         'NAME':
             'django.contrib.auth.password_validation.'
@@ -133,7 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# ログ取得
+# ログ出力機能
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
