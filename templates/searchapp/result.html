@@ -1,25 +1,66 @@
+<!-- テンプレートの継承先 -->
 {% extends 'searchapp/base.html' %}
 <!-- オーバーライド対象：content=子テンプレートのブロック名 -->
-
-<!-- テンプレートの継承先 -->
 {% block content %}
-
-<div class="col-lg-6 offset-lg-3">
-    <h1>検索結果</h1>
-
-    <form action="" method="POST">
-        {% csrf_token %}
-        <input class="btn" type="submit" id="bid_01" name="button_1" value="render">
-        <a href = "{% url 'searchapp:details' %}">詳細画面に遷移する</a>
-    </form>
-
-    <a href="" onclick="document.form1.submit();return false;""> テスト</a>
-    <form name="form1" method="POST" action="">
-        {% csrf_token %}
-        <input type=hidden name="productno" value="product01">
-    </form>
-
-
+<!-- humanizeの呼び出し -->
+{% load humanize %}
+<div class="container mar">
+	<!-- 検索結果の表示 -->
+	<!-- views.pyのclassResultListでクエリの発行結果（検索結果）を格納する -->
+	<!-- result_listが０件の場合 -->
+	{% if result_list|length == 0 %}
+	<p>検索結果が存在しません。</p>
+	<!-- result_listが０件以外の場合 -->
+	{% else %}
+	<table class="table table-hover table-bordered bg-white">
+		<thead class="thead-dark">
+			<tr>
+				<th>商品名</th>
+				<th>カテゴリ</th>
+				<th>価格（￥）<br>※税抜き
+				</th>
+			</tr>
+		<tbody>
+			<!-- result_listの配列数分繰り返す -->
+			<!-- postのリストをresult_listで渡して表示 -->
+			{% for post in result_list %}
+			<tr>
+				<!-- 商品を表示 -->
+				<!-- テーブル幅を55％と指定 -->
+				<td id="{{post.goodsid}}" width="55%">
+					<!-- 名前をform1製品番号　 送信する時の転送方法をpostを指定-->
+					<form name="form1{{ post.productno }}" method="post" action="">
+						<!-- セキュリティ対策 -->
+						{% csrf_token %}
+						<!-- type=非表示データを送信、name=フォーム部品に名前を付ける、
+                                        valus＝送信される値を指定-->
+						<input type=hidden name="productno" value="{{ post.productno }}">
+						<!-- aタグにてハイパーリンク作成、onclickにてPOSTの引数に値を渡す -->
+						<a href=""
+						      onclick="document.form1{{ post.productno }}.submit();return false;">
+							<!-- フォントカラーを黒に設定 --> <font color="#000000">
+							<!-- 商品名を定義 -->
+							{{ post.goodsname }}
+						</font>
+						</a>
+					</form>
+				</td>
+				<!-- カテゴリを表示 -->
+				<!-- テーブル幅を30％と指定 -->
+				<td width="30%">
+					<!-- カテゴリー名をcategoryテーブルのcategorynameを指定 -->
+					{{post.categoryid.categoryname }}
+				</td>
+				<!-- 価格を表示 -->
+				<!-- テーブル幅を15％と指定 -->
+				<td align="right" width="15%">
+					<!-- 価格名を定義、3桁目にカンマを設定 -->
+					{{ post.price| intcomma }}
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% endif %}
 </div>
-
 {% endblock %}
