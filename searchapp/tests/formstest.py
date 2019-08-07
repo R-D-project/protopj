@@ -1,8 +1,10 @@
+'''
+formのバリデーションチェック用ファイル
+'''
 from django.test import TestCase
 from searchapp.models import GoodsTBL
 from searchapp.forms import SizeForm
 from searchapp.forms import ColorForm
-from searchapp.views import DetailsListView
 
 
 class GoodsTBLModelTests(TestCase):
@@ -15,8 +17,8 @@ class GoodsTBLModelTests(TestCase):
         '''
         何も登録しなければ保存されたレコード数は0個
         '''
-        saved_GoodsTBL = GoodsTBL.objects.all()
-        self.assertEqual(saved_GoodsTBL.count(), 0)
+        saved_goodstbl = GoodsTBL.objects.all()
+        self.assertEqual(saved_goodstbl.count(), 0)
 
 
 
@@ -29,7 +31,7 @@ class SizeFormTests(TestCase):
         SizeForm1.正常に入力した場合にエラーにならないことを検証する
         '''
         parmas = []
-        parmas.append(('S','S'))
+        parmas.append(('S', 'S'))
         form = SizeForm(szchoice=parmas)
         self.assertTrue(form.is_valid())
 
@@ -49,7 +51,7 @@ class ColorFormTests(TestCase):
         '''
         ColorForm1.正常に入力した場合にエラーにならないことを検証する
         '''
-        parmas = {'赤':'赤','黒':'黒'}
+        parmas = {'赤':'赤', '黒':'黒'}
         form = ColorForm(clchoice=parmas)
         self.assertTrue(form.is_valid())
 
