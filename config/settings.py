@@ -74,7 +74,7 @@ TEMPLATES = [
     },
 ]
 
-# TODO(勝俣)何の設定をしているか不明であるため要調査
+# webサーバとwebアプリケーションを接続するためのインターフェイスを定義
 WSGI_APPLICATION = 'config.wsgi.application'
 
 

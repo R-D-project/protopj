@@ -13,14 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# アドミン(管理者)機能のインストール
 from django.contrib import admin
-from django.urls import path
+# include機能(includeに含まれるURLに遷移する)のインストール
 from django.urls import include
+# path機能(文字列、url、逆引きの名前を指定して1まとまりとする)のインストール
+from django.urls import path
 
 
 urlpatterns = [
-    # 管理者ページを表示するURLの設定
+    # URLに'admin/'が指定されている場合、管理サイト(admin.site.urls)を参照する
     path('admin/', admin.site.urls),
-    # ’’(指定なし)の場合にsearchappフォルダのurlsを参照する。
+    # URLの指定なしの場合、searchapp内のurls.pyに指定されているURLの処理に移動する
     path('', include('searchapp.urls')),
 ]

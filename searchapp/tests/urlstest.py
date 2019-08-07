@@ -19,7 +19,6 @@ self.assertRaises(Exception, func)
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import resolve
-from django.urls import path
 from searchapp.views import DetailsListView
 
 class UrlResolveTests(TestCase):
