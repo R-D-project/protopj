@@ -51,3 +51,16 @@ table th {
 h1 {
     margin-bottom: 5px;
 }
+
+input.form-inline {
+    width: 250px;
+    box-shadow:0px 0px 5px 3px rgba(68, 68, 68, 0.2) inset;
+    border:1px solid #000;
+    position:relative
+}
+
+#id_category_name {
+    width: 280px;
+    height: 32px;
+}
+
