@@ -100,7 +100,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'testdb',  # RDS構築時に設定したDB名
+        'NAME': 'protodb',  # RDS構築時に設定したDB名
         'USER': 'testuser',  # RDS構築時に設定したユーザ名
         'PASSWORD': 'testpassword',  # ローカル端末にインストールしたときのパスワード
         # RDS作成時に生成されたエンドポイント名
@@ -185,6 +185,7 @@ USE_TZ = True
 
 # デバックモードがFalseの時に有効化
 STATIC_URL = '/static/'  # 静的ファイルの配信用ディレクトリ
+# 個別のアプリではなく、トップページに表示する画像などを保管する場所を指定
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # 静的ファイルの置き場所
 STATIC_ROOT = '/var/www/{}/static' .format(PROJECT_NAME)  # 静的ファイルの配信元
 
