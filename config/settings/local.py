@@ -8,11 +8,15 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from .base import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = プロジェクトのpath
 # PROJECT_NAME = プロジェクトの名前
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# フォルダ階層を1つ落としたのでBASE_DIRの位置を1つ上にする
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROJECT_NAME = os.path.basename(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
@@ -194,3 +198,19 @@ NOSE_ARGS = [
     # coverage を取得する対象アプリ名を定義する。
     '--cover-package=searchapp',
 ]
+
+if DEBUG:
+    def show_toolbar(request):
+        return True
+
+    INSTALLED_APPS += [
+        'debug_toolbar',
+    ]
+
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
+
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+    }
