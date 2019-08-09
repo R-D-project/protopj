@@ -183,11 +183,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 # デバックモードがFalseの時に有効化
-'''
+
 STATIC_URL = '/static/'  # 静的ファイルの配信用ディレクトリ
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # 静的ファイルの置き場所
 STATIC_ROOT = '/var/www/{}/static' .format(PROJECT_NAME)  # 静的ファイルの配信元
-'''
+
 
 # セッションの設定
 SESSION_COOKIE_AGE = 600  # 10分
