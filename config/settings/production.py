@@ -8,11 +8,15 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from .base import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = プロジェクトのpath
 # PROJECT_NAME = プロジェクトの名前
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# フォルダ階層を1つ落としたのでBASE_DIRの位置を1つ上にする
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROJECT_NAME = os.path.basename(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
@@ -22,7 +26,8 @@ PROJECT_NAME = os.path.basename(BASE_DIR)
 SECRET_KEY = '=zjgip(+y7x$z6sk-(n+u=0^8hkxkv$7!*0x0ip=*buld--v2c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # 開発時はTrue,商用提供時はFalse
+# 商用設定ファイルなのでFalseに変更
+DEBUG = False  # 開発時はTrue,商用提供時はFalse
 
 ALLOWED_HOSTS = ['*']  # デバックモードがFalseの時に設定要
 
@@ -91,13 +96,15 @@ DATABASES = {
 }
 """
 
+# AWS用のデータベース定義
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'protodb',
-        'USER': 'root',
-        'PASSWORD': 'rootpassword',  # ローカル端末にインストールしたときのパスワード
-        'HOST': 'localhost',
+        'NAME': 'protodb',  # RDS構築時に設定したDB名
+        'USER': 'testuser',  # RDS構築時に設定したユーザ名
+        'PASSWORD': 'testpassword',  # ローカル端末にインストールしたときのパスワード
+        # RDS作成時に生成されたエンドポイント名
+        'HOST': 'rd-dev01.cfoy0i3ytiui.ap-northeast-1.rds.amazonaws.com',
         'PORT': '3306',
         # トランザクションの有効範囲をリクエストの開始から終了までに設定
         'ATOMIC_REQUESTS': True,
@@ -178,6 +185,7 @@ USE_TZ = True
 
 # デバックモードがFalseの時に有効化
 STATIC_URL = '/static/'  # 静的ファイルの配信用ディレクトリ
+# 個別のアプリではなく、トップページに表示する画像などを保管する場所を指定
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # 静的ファイルの置き場所
 STATIC_ROOT = '/var/www/{}/static' .format(PROJECT_NAME)  # 静的ファイルの配信元
 
@@ -194,3 +202,19 @@ NOSE_ARGS = [
     # coverage を取得する対象アプリ名を定義する。
     '--cover-package=searchapp',
 ]
+
+if DEBUG:
+    def show_toolbar(request):
+        return True
+
+    INSTALLED_APPS += [
+        'debug_toolbar',
+    ]
+
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
+
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+    }
