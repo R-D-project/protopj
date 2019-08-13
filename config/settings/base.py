@@ -8,6 +8,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+# (勝俣)190813:oscar機能追加 -- start --
+from oscar.defaults import *
+# (勝俣)190813:oscar機能追加 -- end --
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = プロジェクトのpath
@@ -42,11 +45,57 @@ INSTALLED_APPS = [
     'searchapp.apps.SearchappConfig',  # アプリ紐付け
     'bootstrap4',  # bootstrap4紐付け
     'django.contrib.humanize',  # humanize紐付け(数値を3桁区切りにする際に使用する。)
+    #'django_nose',
+    # (勝俣)190813:oscar機能追加 -- start --
+    'django.contrib.sites',
+    'django.contrib.flatpages',
+
+    'oscar',
+    'oscar.apps.analytics',
+    'oscar.apps.checkout',
+    'oscar.apps.address',
+    'oscar.apps.shipping',
+    'oscar.apps.catalogue',
+    'oscar.apps.catalogue.reviews',
+    'oscar.apps.partner',
+    'oscar.apps.basket',
+    'oscar.apps.payment',
+    'oscar.apps.offer',
+    'oscar.apps.order',
+    'oscar.apps.customer',
+    'oscar.apps.search',
+    'oscar.apps.voucher',
+    'oscar.apps.wishlists',
+    'oscar.apps.dashboard',
+    'oscar.apps.dashboard.reports',
+    'oscar.apps.dashboard.users',
+    'oscar.apps.dashboard.orders',
+    'oscar.apps.dashboard.catalogue',
+    'oscar.apps.dashboard.offers',
+    'oscar.apps.dashboard.partners',
+    'oscar.apps.dashboard.pages',
+    'oscar.apps.dashboard.ranges',
+    'oscar.apps.dashboard.reviews',
+    'oscar.apps.dashboard.vouchers',
+    'oscar.apps.dashboard.communications',
+    'oscar.apps.dashboard.shipping',
+
+    # 3rd-party apps that oscar depends on
+    'widget_tweaks',
+    'haystack',
+    'treebeard',
+    'sorl.thumbnail',
+    'django_tables2',
+    # (勝俣)190813:oscar機能追加 -- end --
 ]
 
 # humanizeのappで指定可能。
 # 数値を区切る桁数を設定する。
 NUMBER_GROUPING = 3
+
+# (勝俣)190813:oscar機能追加 -- start --
+SITE_ID = 1
+# (勝俣)190813:oscar機能追加 -- end --
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,7 +105,20 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # (勝俣)190813:oscar機能追加 -- start --
+    'oscar.apps.basket.middleware.BasketMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    # (勝俣)190813:oscar機能追加 -- end --
 ]
+
+# (勝俣)190813:oscar機能追加 -- start --
+AUTHENTICATION_BACKENDS = (
+    'oscar.apps.customer.auth_backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+# (勝俣)190813:oscar機能追加 -- end --
+
+
 
 # 初めに参照するURLCONFのルートパス設定
 ROOT_URLCONF = 'config.urls'
@@ -72,10 +134,24 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # (勝俣)190813:oscar機能追加 -- start --
+                'oscar.apps.search.context_processors.search_form',
+                'oscar.apps.checkout.context_processors.checkout',
+                'oscar.apps.customer.notifications.context_processors.notifications',
+                'oscar.core.context_processors.metadata',
+                # (勝俣)190813:oscar機能追加 -- end --
             ],
         },
     },
 ]
+
+# (勝俣)190813:oscar機能追加 -- start --
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
+# (勝俣)190813:oscar機能追加 -- end --
 
 # webサーバとwebアプリケーションを接続するためのインターフェイスを定義
 WSGI_APPLICATION = 'config.wsgi.application'
@@ -142,24 +218,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# ログ出力機能
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-        },
-    }
-}
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -187,13 +245,3 @@ STATIC_ROOT = '/var/www/{}/static' .format(PROJECT_NAME)  # 静的ファイル�
 # セッションの設定
 SESSION_COOKIE_AGE = 600  # 10分
 SESSION_SAVE_EVERY_REQUEST = True  # 1リクエストごとにセッション情報更新
-
-# django-nose, coverage configure
-INSTALLED_APPS += ('django_nose',)
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = [
-    '--with-coverage',  # coverage を取る
-    '--cover-html',  # coverage を html で cover/ に出力する
-    # coverage を取得する対象アプリ名を定義する。
-    '--cover-package=searchapp',
-]
