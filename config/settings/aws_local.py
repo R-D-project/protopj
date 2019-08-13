@@ -33,67 +33,6 @@ ALLOWED_HOSTS = ['*']  # デバックモードがFalseの時に設定要
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'searchapp.apps.SearchappConfig',  # アプリ紐付け
-    'bootstrap4',  # bootstrap4紐付け
-    'django.contrib.humanize',  # humanize紐付け(数値を3桁区切りにする際に使用する。)
-]
-
-# humanizeのappで指定可能。
-# 数値を区切る桁数を設定する。
-NUMBER_GROUPING = 3
-
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
-# 初めに参照するURLCONFのルートパス設定
-ROOT_URLCONF = 'config.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # テンプレート探索優先ディレクトリ
-        'APP_DIRS': True,  # アプリ名フォルダ直下探索有無
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
-# webサーバとwebアプリケーションを接続するためのインターフェイスを定義
-# WSGI_APPLICATION = 'config.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-# 今回はsqlite3を使用しないためコメント化
-"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-"""
 
 # AWS用のデータベース定義
 DATABASES = {
@@ -117,34 +56,6 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
-# パスワードのバリデーションチェック機能
-AUTH_PASSWORD_VALIDATORS = [
-    # 登録パスワードがusername,first_name,last_name,emailと類似していないかチェックする。
-    {
-        'NAME':
-            'django.contrib.auth.password_validation.'
-            'UserAttributeSimilarityValidator',
-    },
-    # minimumLengthValidator:パスワードの最小の長さを設定できる。
-    {
-        'NAME':
-            'django.contrib.auth.password_validation.'
-            'MinimumLengthValidator',
-    },
-    # CommonPasswordValidator:よくあるパスワードのリスト.txtと一致したらエラーを出す。
-    {
-        'NAME':
-            'django.contrib.auth.password_validation.'
-            'CommonPasswordValidator',
-    },
-    # NumericPasswordValidator:数値のみでパスワードが構成されていないかチェックする。
-    {
-        'NAME':
-            'django.contrib.auth.password_validation.'
-            'NumericPasswordValidator',
-    },
-]
-
 # ログ出力機能
 LOGGING = {
     'version': 1,
@@ -163,20 +74,6 @@ LOGGING = {
     }
 }
 
-# Internationalization
-# https://docs.djangoproject.com/en/2.1/topics/i18n/
-
-# 言語をja(日本語)に設定する。
-LANGUAGE_CODE = 'ja'
-
-# 時間をAsia/Tokyo(日本)に設定する。(now等の時間取得で使用する)
-TIME_ZONE = 'Asia/Tokyo'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -187,7 +84,6 @@ USE_TZ = True
 STATIC_URL = '/static/'  # 静的ファイルの配信用ディレクトリ
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # 静的ファイルの置き場所
 STATIC_ROOT = '/var/www/{}/static' .format(PROJECT_NAME)  # 静的ファイルの配信元
-
 
 # セッションの設定
 SESSION_COOKIE_AGE = 600  # 10分

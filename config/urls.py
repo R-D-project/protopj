@@ -22,12 +22,19 @@ from django.urls import path
 
 from .settings import local
 
+# (勝俣)190813:oscar機能追加 -- start --
+from django.apps import apps
+# (勝俣)190813:oscar機能追加 -- end --
 
 urlpatterns = [
     # URLに'admin/'が指定されている場合、管理サイト(admin.site.urls)を参照する
     path('admin/', admin.site.urls),
     # URLの指定なしの場合、searchapp内のurls.pyに指定されているURLの処理に移動する
     path('', include('searchapp.urls')),
+    # (勝俣)190813:oscar機能追加 -- start --
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('oscar/', include(apps.get_app_config('oscar').urls[0])),
+    # (勝俣)190813:oscar機能追加 -- end --
 ]
 
 
