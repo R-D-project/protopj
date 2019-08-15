@@ -292,7 +292,7 @@ class BasketAddView(FormView):
 
     def form_valid(self, form):
         """
-        
+
         """
         #不明
         offers_before = self.request.basket.applied_offers()
@@ -503,3 +503,5 @@ class SavedView(ModelFormSetView):
                 error for ed in formset.errors for el
                 in ed.values() for error in el))
         return redirect_to_referrer(self.request, 'basket:summary')
+    #臨時で追加
+
