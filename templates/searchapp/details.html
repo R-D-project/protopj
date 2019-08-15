@@ -7,6 +7,7 @@
 	   <p>検索結果が存在しません。</p>
     <!-- 詳細ページが存在する場合 -->
     {% else %}
+    <button type="submit" name="button1" class="btn col-md-1">&#x1f6d2;</button>
 	<table class="bg-white table table-bordered">
 		<thead class="thead-dark">
 			{% for form in goods_details %}
@@ -51,5 +52,6 @@
 		</thead>
 	</table>
 	{% endif %}
+	<button type="submit" name="button1" class="btn col-md-2">カートへ入れる</button>
 </div>
 {% endblock %}

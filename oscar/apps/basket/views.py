@@ -244,24 +244,44 @@ class BasketAddView(FormView):
     Handles the add-to-basket submissions, which are triggered from various
     parts of the site. The add-to-basket form is loaded into templates using
     a templatetag from module basket_tags.py.
+    カートへ追加処理を行うクラス
+    super()で呼ぶもの（親）＝generic/edit.py FormView
     """
-    form_class = AddToBasketForm
+    form_class = AddToBasketForm  # forms.pyから製品IDを渡すことのできるViewを呼び出す。
+    # アプリの名前（catalogue）とモデル（product）を取得するメソッドを呼び出している。
     product_model = get_model('catalogue', 'product')
-    add_signal = basket_addition
-    http_method_names = ['post']
+    add_signal = basket_addition #basket_additionは引き数追加メソッドのように見える（不明）
+    http_method_names = ['post']  # postメソッドを変数に保存しているように見える（不明）
 
     def post(self, request, *args, **kwargs):
+        """
+        ①product_modelで取得した値のオブジェクトを取得するメソッドを変数「self.product」に格納
+        ②取得したフォームインスタンスをインスタンス化する親クラスを返却する
+        """
         self.product = shortcuts.get_object_or_404(
             self.product_model, pk=kwargs['pk'])
         return super().post(request, *args, **kwargs)
 
     def get_form_kwargs(self):
+        # フォームをインスタンス化するためのキーワード引き数を返却する親メソッドを変数kwargsに格納
+        # 辞書型が変数に格納されてくる（予想）
         kwargs = super().get_form_kwargs()
+        # 辞書型に['basket':リクエストを送ったバスケット（予想）]が格納される
         kwargs['basket'] = self.request.basket
+        # 辞書型に['product':製品のオブジェクト（不明）]が格納される
         kwargs['product'] = self.product
+        # リクエストを送ったバスケットとバスケットに格納される商品の格納された辞書型が返却される（予想）
         return kwargs
 
     def form_invalid(self, form):
+        """
+        ①変数msgsに空のリストを格納
+        ②フォームのエラーの値（不明）分繰り返すfor文の中で
+        msgsにエラーテキスト（不明）を追加格納する処理
+        ③msgsに格納された文字列のバリデーションチェック（予想）
+        ④class BasketViewにHttpResponseRedirectが存在し
+        安全な場合にclass BasketViewに返却をする（予想）
+        """
         msgs = []
         for error in form.errors.values():
             msgs.append(error.as_text())
@@ -271,32 +291,41 @@ class BasketAddView(FormView):
         return redirect_to_referrer(self.request, 'basket:summary')
 
     def form_valid(self, form):
+        """
+        
+        """
+        #不明
         offers_before = self.request.basket.applied_offers()
 
+        #フォームで取得した製品をバスケットに追加（不明）
         self.request.basket.add_product(
             form.product, form.cleaned_data['quantity'],
             form.cleaned_options())
 
+        #get_success_messageで生成した文字列を引数として持ち、メッセージ追加メソッドを呼ぶ
         messages.success(self.request, self.get_success_message(form),
                          extra_tags='safe noicon')
 
-        # Check for additional offer messages
+        # Check for additional offer messages（追加のオファーメッセージを確認する）
         BasketMessageGenerator().apply_messages(self.request, offers_before)
 
-        # Send signal for basket addition
+        # Send signal for basket addition（バスケット追加の信号を送信する）
         self.add_signal.send(
             sender=self, product=form.product, user=self.request.user,
             request=self.request)
 
+        #self.get_success_url()で作成したURLにHttpResponseRedirectを返却する
         return super().form_valid(form)
 
     def get_success_message(self, form):
+        # メッセージの文字列を作成する
         return render_to_string(
             'oscar/basket/messages/addition.html',
             {'product': form.product,
              'quantity': form.cleaned_data['quantity']})
 
     def get_success_url(self):
+        # カート追加通知を返却する先のURLを作成する
         post_url = self.request.POST.get('next')
         if post_url and is_safe_url(post_url, self.request.get_host()):
             return post_url

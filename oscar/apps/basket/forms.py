@@ -123,10 +123,22 @@ class AddToBasketForm(forms.Form):
     quantity = forms.IntegerField(initial=1, min_value=1, label=_('Quantity'))
 
     def __init__(self, basket, product, *args, **kwargs):
+        """
+        意訳：
+        このクラスで渡される「product」は製品とは限りません。
+        商品をバスケットに追加する際に、オプションの「product_idパラメーター」が渡されます。
+        子の製品がバスケット追加されている場合は、親のproduct_idを渡します。
+        バスケットに子のproduct_idが表示されます。
+        """
         # Note, the product passed in here isn't necessarily the product being
+        #ここで渡される製品は、必ずしも製品であるとは限らないことに注意してください
         # added to the basket. For child products, it is the *parent* product
+        # バスケットに追加されました。子製品の場合は、*親*製品です
         # that gets passed to the form. An optional product_id param is passed
+        # フォームに渡されます。オプションのproduct_idパラメーターが渡されます
         # to indicate the ID of the child product being added to the basket.
+        # バスケットに追加される子製品のIDを示します。
+        
         self.basket = basket
         self.parent_product = product
 
@@ -145,6 +157,9 @@ class AddToBasketForm(forms.Form):
         list of children.
 
         Currently requires that a stock record exists for the children
+        直訳：
+        「グループ」タイプの製品のフィールドを追加します（たとえば、子のリスト。
+        現在、子供の在庫記録が存在する必要があります
         """
         choices = []
         disabled_values = []

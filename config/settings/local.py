@@ -53,6 +53,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
 # ログ出力機能
+'''
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -69,7 +70,7 @@ LOGGING = {
         },
     }
 }
-
+'''
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
