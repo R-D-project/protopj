@@ -23,7 +23,7 @@ OpenBasketManager, SavedBasketManager = get_classes('basket.managers', ['OpenBas
 
 class AbstractBasket(models.Model):
     """
-    Basket object
+    バスケットオブジェクト
     """
     # Baskets can be anonymously owned - hence this field is nullable.  When a
     # anon user signs in, their two baskets are merged.
@@ -40,11 +40,11 @@ class AbstractBasket(models.Model):
     OPEN, MERGED, SAVED, FROZEN, SUBMITTED = (
         "Open", "Merged", "Saved", "Frozen", "Submitted")
     STATUS_CHOICES = (
-        (OPEN, _("Open - currently active")),
+        (OPEN, _("Open - 現在アクティブ状態")),
         (MERGED, _("Merged - superceded by another basket")),
-        (SAVED, _("Saved - for items to be purchased later")),
+        (SAVED, _("Saved - 後で購入するアイテム")),
         (FROZEN, _("Frozen - the basket cannot be modified")),
-        (SUBMITTED, _("Submitted - has been ordered at the checkout")),
+        (SUBMITTED, _("Submitted - チェックアウト時に注文されたデータ")),
     )
     status = models.CharField(
         _("Status"), max_length=128, default=OPEN, choices=STATUS_CHOICES)
@@ -53,7 +53,7 @@ class AbstractBasket(models.Model):
     # for sites to only allow one voucher per basket - this will need to be
     # enforced in the project's codebase.
     vouchers = models.ManyToManyField(
-        'voucher.Voucher', verbose_name=_("Vouchers"), blank=True)
+        'voucher.Voucher', verbose_name=_("Vouchers"), blank=True)      # 使わない部分はデフォルト値設定
 
     date_created = models.DateTimeField(_("Date created"), auto_now_add=True)
     date_merged = models.DateTimeField(_("Date merged"), null=True, blank=True)
@@ -64,10 +64,10 @@ class AbstractBasket(models.Model):
     editable_statuses = (OPEN, SAVED)
 
     class Meta:
-        abstract = True
+        abstract = True  # True：マイグレーションしてもテーブルが作成されない→models.pyで継承されることでテーブルが作成される
         app_label = 'basket'
         verbose_name = _('Basket')
-        verbose_name_plural = _('Baskets')
+        verbose_name_plural = _('カート情報')
 
     objects = models.Manager()
     open = OpenBasketManager()
@@ -410,7 +410,7 @@ class AbstractBasket(models.Model):
     @property
     def total_excl_tax(self):
         """
-        Return total line price excluding tax
+        バケット内合計金額を税抜で返却
         """
         return self._get_total('line_price_excl_tax_incl_discounts')
 
@@ -422,7 +422,7 @@ class AbstractBasket(models.Model):
     @property
     def total_incl_tax(self):
         """
-        Return total price inclusive of tax and discounts
+        税および割引を含むバケット内の合計金額を返す
         """
         return self._get_total('line_price_incl_tax_incl_discounts')
 
@@ -540,8 +540,8 @@ class AbstractBasket(models.Model):
 
     @property
     def currency(self):
-        # Since all lines should have the same currency, return the currency of
-        # the first one found.
+        # すべての行は同じ通貨を持つはずなので、最初に見つかった通貨を返す
+
         for line in self.all_lines():
             return line.price_currency
 
@@ -585,7 +585,7 @@ class AbstractBasket(models.Model):
 
 
 class AbstractLine(models.Model):
-    """A line of a basket (product and a quantity)
+    """バスケットの行フィールド（商品と数量）
 
     Common approaches on ordering basket lines:
 
@@ -661,7 +661,7 @@ class AbstractLine(models.Model):
         ordering = ['date_created', 'pk']
         unique_together = ("basket", "line_reference")
         verbose_name = _('Basket line')
-        verbose_name_plural = _('Basket lines')
+        verbose_name_plural = _('購入履歴')     # ←本当かはいまいち不明・・・
 
     def __str__(self):
         return _(
@@ -920,7 +920,7 @@ class AbstractLine(models.Model):
 
 class AbstractLineAttribute(models.Model):
     """
-    An attribute of a basket line
+    カートの中の１つ１つのものの属性
     """
     line = models.ForeignKey(
         'basket.Line',

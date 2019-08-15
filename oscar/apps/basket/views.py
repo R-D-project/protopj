@@ -64,7 +64,7 @@ class BasketView(ModelFormSetView):
 
     def get_basket_warnings(self, basket):
         """
-        Return a list of warnings that apply to this basket
+        このバスケットに適用される警告のリストを返す
         """
         warnings = []
         for line in basket.all_lines():
@@ -244,8 +244,9 @@ class BasketAddView(FormView):
     Handles the add-to-basket submissions, which are triggered from various
     parts of the site. The add-to-basket form is loaded into templates using
     a templatetag from module basket_tags.py.
-    カートへ追加処理を行うクラス
-    super()で呼ぶもの（親）＝generic/edit.py FormView
+    サイトのさまざまな部分からトリガーされる、バスケットに追加する処理を実装
+    バスケットに追加フォームは、モジュールbasket_tags.pyのテンプレートタグを使用して
+    テンプレートにロードされる
     """
     form_class = AddToBasketForm  # forms.pyから製品IDを渡すことのできるViewを呼び出す。
     # アプリの名前（catalogue）とモデル（product）を取得するメソッドを呼び出している。
@@ -254,12 +255,10 @@ class BasketAddView(FormView):
     http_method_names = ['post']  # postメソッドを変数に保存しているように見える（不明）
 
     def post(self, request, *args, **kwargs):
-        """
-        ①product_modelで取得した値のオブジェクトを取得するメソッドを変数「self.product」に格納
-        ②取得したフォームインスタンスをインスタンス化する親クラスを返却する
-        """
+        # product_modelで取得した値のオブジェクトを取得するメソッドを変数「self.product」に格納
         self.product = shortcuts.get_object_or_404(
             self.product_model, pk=kwargs['pk'])
+        # 取得したフォームインスタンスをインスタンス化する親クラスを返却する
         return super().post(request, *args, **kwargs)
 
     def get_form_kwargs(self):
@@ -274,26 +273,18 @@ class BasketAddView(FormView):
         return kwargs
 
     def form_invalid(self, form):
-        """
-        ①変数msgsに空のリストを格納
-        ②フォームのエラーの値（不明）分繰り返すfor文の中で
-        msgsにエラーテキスト（不明）を追加格納する処理
-        ③msgsに格納された文字列のバリデーションチェック（予想）
-        ④class BasketViewにHttpResponseRedirectが存在し
-        安全な場合にclass BasketViewに返却をする（予想）
-        """
+        # 変数msgsに空のリストを格納
         msgs = []
+        # for文でmsgsリストの中に値を格納（格納している値の内容は不明）
         for error in form.errors.values():
             msgs.append(error.as_text())
+        #不明
         clean_msgs = [m.replace('* ', '') for m in msgs if m.startswith('* ')]
         messages.error(self.request, ",".join(clean_msgs))
-
+        #class BasketViewへリダイレクト
         return redirect_to_referrer(self.request, 'basket:summary')
 
     def form_valid(self, form):
-        """
-
-        """
         #不明
         offers_before = self.request.basket.applied_offers()
 
