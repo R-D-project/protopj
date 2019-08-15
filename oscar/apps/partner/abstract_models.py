@@ -161,7 +161,7 @@ class AbstractStockRecord(models.Model):
         app_label = 'partner'
         unique_together = ('partner', 'partner_sku')
         verbose_name = _("Stock record")
-        verbose_name_plural = _("Stock records")
+        verbose_name_plural = _("在庫数管理")
 
     @property
     def net_stock_level(self):
@@ -233,10 +233,8 @@ class AbstractStockRecord(models.Model):
 
     def consume_allocation(self, quantity):
         """
-        Consume a previous allocation
-
-        This is used when an item is shipped.  We remove the original
-        allocation and adjust the number in stock accordingly
+        以前の割り当てを消費する。
+        商品が出荷されるときに使用されるメソッド。元の配分を削除し、それに応じて在庫数を調整する。
         """
         if not self.can_track_allocations:
             return

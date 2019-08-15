@@ -240,18 +240,14 @@ class AbstractProductCategory(models.Model):
 
 class AbstractProduct(models.Model):
     """
-    The base product object
-
-    There's three kinds of products; they're distinguished by the structure
-    field.
-
-    - A stand alone product. Regular product that lives by itself.
-    - A child product. All child products have a parent product. They're a
-      specific version of the parent.
-    - A parent product. It essentially represents a set of products.
-
-    An example could be a yoga course, which is a parent product. The different
-    times/locations of the courses would be associated with the child products.
+    ベースとなる製品モデルオブジェクト。
+    製品には3種類ある。これらは構造フィールドによって区別される。
+    - stand alone 製品        ： 単独で存在するレギュラー製品。
+    - child 製品（子製品）    ：すべての子製品には必ず親製品が存在する。 それらは親の特定のバージョンになる。
+    - parent 製品（親製品）    ：基本的に、製品のセットを表す。
+    【例】ヨガコース
+        ・コースそのもの：親製品
+        ・コースの時間/場所：子製品
     """
     STANDALONE, PARENT, CHILD = 'standalone', 'parent', 'child'
     STRUCTURE_CHOICES = (
@@ -259,8 +255,9 @@ class AbstractProduct(models.Model):
         (PARENT, _('Parent product')),
         (CHILD, _('Child product'))
     )
+    # カラム定義
     structure = models.CharField(
-        _("Product structure"), max_length=10, choices=STRUCTURE_CHOICES,
+        _("製品構成"), max_length=10, choices=STRUCTURE_CHOICES,
         default=STANDALONE)
 
     is_public = models.BooleanField(
@@ -280,18 +277,18 @@ class AbstractProduct(models.Model):
         null=True,
         on_delete=models.CASCADE,
         related_name='children',
-        verbose_name=_("Parent product"),
+        verbose_name=_("親製品"),
         help_text=_("Only choose a parent product if you're creating a child "
                     "product.  For example if this is a size "
                     "4 of a particular t-shirt.  Leave blank if this is a "
                     "stand-alone product (i.e. there is only one version of"
                     " this product)."))
 
-    # Title is mandatory for canonical products but optional for child products
-    title = models.CharField(pgettext_lazy('Product title', 'Title'),
+    # # タイトルは標準製品には必須になるが、子製品に対してはオプションとなる
+    title = models.CharField(pgettext_lazy(u'製品タイトル', u'タイトル'),
                              max_length=255, blank=True)
-    slug = models.SlugField(_('Slug'), max_length=255, unique=False)
-    description = models.TextField(_('Description'), blank=True)
+    slug = models.SlugField(_('スラッグ'), max_length=255, unique=False)
+    description = models.TextField(_('詳細説明'), blank=True)
 
     #: "Kind" of product, e.g. T-Shirt, Book, etc.
     #: None for child products, they inherit their parent's product class
@@ -300,7 +297,7 @@ class AbstractProduct(models.Model):
         null=True,
         blank=True,
         on_delete=models.PROTECT,
-        verbose_name=_('Product type'), related_name="products",
+        verbose_name=_('製品タイプ'), related_name="products",
         help_text=_("Choose what type of product this is"))
     attributes = models.ManyToManyField(
         'catalogue.ProductAttribute',
@@ -310,7 +307,7 @@ class AbstractProduct(models.Model):
                     "have, such as a size, as specified by its class"))
     #: It's possible to have options product class-wide, and per product.
     product_options = models.ManyToManyField(
-        'catalogue.Option', blank=True, verbose_name=_("Product options"),
+        'catalogue.Option', blank=True, verbose_name=_("製品オプション"),
         help_text=_("Options are values that can be associated with a item "
                     "when it is added to a customer's basket.  This could be "
                     "something like a personalised message to be printed on "
@@ -318,13 +315,13 @@ class AbstractProduct(models.Model):
 
     recommended_products = models.ManyToManyField(
         'catalogue.Product', through='ProductRecommendation', blank=True,
-        verbose_name=_("Recommended products"),
+        verbose_name=_("オススメ商品"),
         help_text=_("These are products that are recommended to accompany the "
                     "main product."))
 
-    # Denormalised product rating - used by reviews app.
-    # Product has no ratings if rating is None
-    rating = models.FloatField(_('Rating'), null=True, editable=False)
+    # 非正規化された製品評価-レビューアプリで使用される
+    # 評価「なし」の場合、製品には評価項目がなくなる
+    rating = models.FloatField(_('Rating'), null=True, editable=False)              # editable=False：adminページに表示させない
 
     date_created = models.DateTimeField(
         _("Date created"), auto_now_add=True, db_index=True)
@@ -343,9 +340,8 @@ class AbstractProduct(models.Model):
     #: Note that this flag is ignored for child products; they inherit from
     #: the parent product.
     is_discountable = models.BooleanField(
-        _("Is discountable?"), default=True, help_text=_(
-            "This flag indicates if this product can be used in an offer "
-            "or not"))
+        _("割引可能か?"), default=True, help_text=_(
+            "このフラグは、この製品をオファーで使用できるかどうかを示す。"))
 
     objects = ProductQuerySet.as_manager()
     # browsable property is deprecated and will be removed in Oscar 2.1
@@ -360,10 +356,12 @@ class AbstractProduct(models.Model):
         verbose_name_plural = _('Products')
 
     def __init__(self, *args, **kwargs):
+        """初期化メソッド"""
         super().__init__(*args, **kwargs)
         self.attr = ProductAttributesContainer(product=self)
 
     def __str__(self):
+        """adminページへの表示仕様を決定するメソッド"""
         if self.title:
             return self.title
         if self.attribute_summary:
@@ -372,15 +370,13 @@ class AbstractProduct(models.Model):
             return self.get_title()
 
     def get_absolute_url(self):
-        """
-        Return a product's absolute url
-        """
+        """製品の絶対URLを返却するメソッド"""
         return reverse('catalogue:detail',
                        kwargs={'product_slug': self.slug, 'pk': self.id})
 
     def clean(self):
         """
-        Validate a product. Those are the rules:
+        以下ルールにしたがって製品を判定する
 
         +---------------+-------------+--------------+--------------+
         |               | stand alone | parent       | child        |
@@ -402,17 +398,14 @@ class AbstractProduct(models.Model):
         | options       | optional    | optional     | forbidden    |
         +---------------+-------------+--------------+--------------+
 
-        Because the validation logic is quite complex, validation is delegated
-        to the sub method appropriate for the product's structure.
+        検証ロジックは非常に複雑なため、検証は製品の構造に適したサブメソッドに委任される。
         """
         getattr(self, '_clean_%s' % self.structure)()
         if not self.is_parent:
             self.attr.validate_attributes()
 
     def _clean_standalone(self):
-        """
-        Validates a stand-alone product
-        """
+        """スタンドアロン商品をバリデート（判定）する"""
         if not self.title:
             raise ValidationError(_("Your product must have a title."))
         if not self.product_class:
@@ -421,9 +414,7 @@ class AbstractProduct(models.Model):
             raise ValidationError(_("Only child products can have a parent."))
 
     def _clean_child(self):
-        """
-        Validates a child product
-        """
+        """子製品をバリデート（判定）する"""
         if not self.parent_id:
             raise ValidationError(_("A child product needs a parent."))
         if self.parent_id and not self.parent.is_parent:
@@ -441,15 +432,14 @@ class AbstractProduct(models.Model):
                 _("A child product can't have options."))
 
     def _clean_parent(self):
-        """
-        Validates a parent product.
-        """
+        """親製品をバリデート（判定）する"""
         self._clean_standalone()
         if self.has_stockrecords:
             raise ValidationError(
                 _("A parent product can't have stockrecords."))
 
     def save(self, *args, **kwargs):
+        """編集を保存するメソッド。adminページにて「保存する」ボタンを押下したときに呼び出される"""
         if not self.slug:
             self.slug = slugify(self.get_title())
         super().save(*args, **kwargs)
@@ -459,20 +449,26 @@ class AbstractProduct(models.Model):
 
     @property
     def is_standalone(self):
+        """「structure」カラムに'standalone'を設定するメソッド"""
+
         return self.structure == self.STANDALONE
 
     @property
     def is_parent(self):
+        """「structure」カラムに'parent'を設定するメソッド"""
+
         return self.structure == self.PARENT
 
     @property
     def is_child(self):
+        """「structure」カラムに'child'を設定するメソッド"""
+
         return self.structure == self.CHILD
 
+
     def can_be_parent(self, give_reason=False):
-        """
-        Helps decide if a the product can be turned into a parent product.
-        """
+        """製品を親製品に変えることができるかどうかを判断するのに役立つメソッド"""
+
         reason = None
         if self.is_child:
             reason = _('The specified parent product is a child product.')
@@ -489,16 +485,15 @@ class AbstractProduct(models.Model):
     @property
     def options(self):
         """
-        Returns a set of all valid options for this product.
-        It's possible to have options product class-wide, and per product.
+        該当製品に対して全ての有効なオプションのセットを返却するメソッド
+        オプション製品はクラス全体で、製品ごとに持つことができる。
         """
         pclass_options = self.get_product_class().options.all()
         return pclass_options | self.product_options.all()
 
     @cached_property
     def has_options(self):
-        # Extracting annotated value with number of product class options
-        # from product list queryset.
+        # 製品リストクエリセットから多数の製品クラスオプションを使用して注釈付きの値を抽出する。
         num_product_class_options = getattr(self, 'num_product_class_options', None)
         num_product_options = getattr(self, 'num_product_options', None)
         if num_product_class_options is not None and num_product_options is not None:
@@ -511,19 +506,20 @@ class AbstractProduct(models.Model):
 
     @property
     def has_stockrecords(self):
-        """
-        Test if this product has any stockrecords
-        """
+        """この製品に在庫記録があるかどうかテストするメソッド"""
+
         return self.stockrecords.exists()
 
     @property
     def num_stockrecords(self):
+        """該当製品の在庫数を返却するメソッド"""
+
         return self.stockrecords.count()
 
     @property
     def attribute_summary(self):
         """
-        Return a string of all of a product's attributes
+        製品のすべての属性の文字列を返却するメソッド
         """
         attributes = self.attribute_values.all()
         pairs = [attribute.summary() for attribute in attributes]
@@ -531,7 +527,7 @@ class AbstractProduct(models.Model):
 
     def get_title(self):
         """
-        Return a product's title or it's parent's title if it has no title
+        製品のタイトルを取得し返却する。タイトルがない場合は親のタイトルを返す
         """
         title = self.title
         if not title and self.parent_id:
@@ -541,7 +537,8 @@ class AbstractProduct(models.Model):
 
     def get_product_class(self):
         """
-        Return a product's item class. Child products inherit their parent's.
+        該当製品の「製品タイプ」カラム部分の値を返却するメソッド
+        ※子製品は親製品を継承する
         """
         if self.is_child:
             return self.parent.product_class
@@ -551,8 +548,7 @@ class AbstractProduct(models.Model):
 
     def get_is_discountable(self):
         """
-        At the moment, is_discountable can't be set individually for child
-        products; they inherit it from their parent.
+        現時点では、子製品に対してis_discountableを個別に設定することはできず、親から継承する。
         """
         if self.is_child:
             return self.parent.is_discountable
@@ -561,7 +557,7 @@ class AbstractProduct(models.Model):
 
     def get_categories(self):
         """
-        Return a product's categories or parent's if there is a parent product.
+        親製品がある場合、製品のカテゴリまたは親のカテゴリを返すメソッド
         """
         if self.is_child:
             return self.parent.categories
@@ -573,7 +569,7 @@ class AbstractProduct(models.Model):
 
     def get_missing_image(self):
         """
-        Returns a missing image object.
+        不足している画像オブジェクトを返すメソッド。
         """
         # This class should have a 'name' property so it mimics the Django file
         # field.
@@ -612,16 +608,14 @@ class AbstractProduct(models.Model):
 
     def update_rating(self):
         """
-        Recalculate rating field
+        ratingフィールドを再計算し、更新するメソッド
         """
         self.rating = self.calculate_rating()
         self.save()
     update_rating.alters_data = True
 
     def calculate_rating(self):
-        """
-        Calculate rating value
-        """
+        """割引額を計算するメソッド"""
         result = self.reviews.filter(
             status=self.reviews.model.APPROVED
         ).aggregate(
@@ -634,19 +628,22 @@ class AbstractProduct(models.Model):
         return rating
 
     def has_review_by(self, user):
+        """
+        ・レビュー内容を返却する？
+        ・ゲストユーザの場合、Falseを返す
+        """
         if user.is_anonymous:
             return False
         return self.reviews.filter(user=user).exists()
 
     def is_review_permitted(self, user):
         """
-        Determines whether a user may add a review on this product.
-
-        Default implementation respects OSCAR_ALLOW_ANON_REVIEWS and only
-        allows leaving one review per user and product.
-
-        Override this if you want to alter the default behaviour; e.g. enforce
-        that a user purchased the product to be allowed to leave a review.
+        ユーザーがこの製品にレビューを追加できるかどうかを決定するメソッド。
+        ■デフォルトでの実装
+            「OSCAR_ALLOW_ANON_REVIEWS」を尊重
+            →ユーザーと製品ごとに1つのレビューのみ投稿可能
+        ※デフォルトの動作を変更する場合は、これをオーバーライドする必要がある
+        　例えば レビューを残すことを許可するために、ユーザーが製品を購入したことを強制する
         """
         if user.is_authenticated or settings.OSCAR_ALLOW_ANON_REVIEWS:
             return not self.has_review_by(user)
@@ -655,11 +652,12 @@ class AbstractProduct(models.Model):
 
     @cached_property
     def num_approved_reviews(self):
+        """承認されたレビューの数を返却するメソッド？"""
         return self.reviews.approved().count()
 
     @property
     def sorted_recommended_products(self):
-        """Keeping order by recommendation ranking."""
+        """推奨ランキングによる順序を維持して返却するメソッド"""
         return [r.recommendation for r in self.primary_recommendations
                                               .select_related('recommendation').all()]
 
