@@ -2,14 +2,13 @@
 {% extends 'searchapp/base.html' %}
 <!-- オーバーライド対象：content=子テンプレートのブロック名 -->
 {% block content %}
-<!--{% load staticfiles %}
-{% load bootstrap4 %}-->
-<!DOCTYPE html>
-<body class=" login" data-admin-utc-offset="32400">
+{% load bootstrap4 %}
+
+<body class=" login">
 <div id="container">
   <div class="inner">
     <div id="header" class="mysystem-header">
-              テスト！ユーザ認証システム
+              ログインしてください
     </div>
     <div id="content" class="colM">
       <div id="content-main">
@@ -17,7 +16,7 @@
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
         <div class="form-group row px-3">
-          <button type="submit" name="button1" class="btn col-md-1">ログイン</button>
+          <input type="submit" class="btn btn-primary btn-block" value="ログイン" />
         </div>
         <input type="hidden" name="next" value="{{ next }}" />
         </form>
