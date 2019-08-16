@@ -1,5 +1,5 @@
-"""config URL Configuration
 
+"""config URL Configuration
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
 Examples:
@@ -20,6 +20,8 @@ from django.urls import include
 # path機能(文字列、url、逆引きの名前を指定して1まとまりとする)のインストール
 from django.urls import path
 
+from django.conf.urls import include, url
+
 from .settings import local
 
 
@@ -28,6 +30,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # URLの指定なしの場合、searchapp内のurls.pyに指定されているURLの処理に移動する
     path('', include('searchapp.urls')),
+    path('accounts/', include('django.contrib.auth.urls')), #  ログイン用
 ]
 
 

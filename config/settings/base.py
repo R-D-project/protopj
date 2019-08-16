@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'searchapp.apps.SearchappConfig',  # アプリ紐付け
     'bootstrap4',  # bootstrap4紐付け
     'django.contrib.humanize',  # humanize紐付け(数値を3桁区切りにする際に使用する。)
+    'user_sessions', #usersessions紐付け
 ]
 
 # humanizeのappで指定可能。
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'user_sessions.middleware.SessionMiddleware'  # ログインセッション管理
 ]
 
 # 初めに参照するURLCONFのルートパス設定
@@ -187,3 +189,6 @@ STATIC_ROOT = '/var/www/{}/static' .format(PROJECT_NAME)  # 静的ファイル�
 # セッションの設定
 SESSION_COOKIE_AGE = 600  # 10分
 SESSION_SAVE_EVERY_REQUEST = True  # 1リクエストごとにセッション情報更新
+
+LOGOUT_REDIRECT_URL='/'  # ログアウト時のリダイレクト先URL
+SESSION_ENGINE = 'user_sessions.backends.db'  # セッション情報をDBに保存する設定

@@ -2,6 +2,7 @@
 searchappアプリのソースコードファイル
 '''
 from datetime import datetime
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.views import generic
 from django.shortcuts import redirect
@@ -12,7 +13,7 @@ from .forms import ColorForm
 from .models import GoodsTBL
 
 
-class IndexView(generic.ListView):
+class IndexView(LoginRequiredMixin,generic.ListView):
     '''
     検索画面表示、検索文字列取得のためのクラス
     '''
