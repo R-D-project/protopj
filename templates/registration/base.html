@@ -11,19 +11,6 @@
         <link href="{% static 'css/style.css' %}" rel="stylesheet">
         <script type="text/javascript" src="{% static 'js/searchapp.js' %}"></script>
         <title>{% block title %}ECサイト{% endblock %}</title>
-        {% if user.is_authenticated %}
-            <div style="text-align: right">
-                ようこそ{{ user.get_username }}様
-                <a  href="{% url 'searchapp:logout' %}">ログアウト</a>
-            </div>
-        {% else %}
-            <div style="text-align: right">
-                ようこそ、ゲスト様
-                <a  href="{% url 'searchapp:login' %}?next={{request.path}}">
-                ﾛｸﾞｲﾝ
-                </a>
-            </div>
-        {% endif %}
     </head>
     <body>
          <main>

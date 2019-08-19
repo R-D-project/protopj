@@ -4,6 +4,9 @@
 '''
 from django import forms
 from .models import CategoryTBL
+from django.contrib.auth.forms import (
+    AuthenticationForm
+)
 
 
 # ModelChoiceField=プルダウンの選択肢をmodels.pyから参照するフォームの種類
@@ -117,3 +120,14 @@ class ColorForm(forms.Form):
                 },
             ),
     )
+
+
+class LoginForm(AuthenticationForm):
+    """ログインフォーム"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+            # placeholderにフィールドのラベルを入れる
+            field.widget.attrs['placeholder'] = field.label

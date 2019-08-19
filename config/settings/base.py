@@ -190,5 +190,6 @@ STATIC_ROOT = '/var/www/{}/static' .format(PROJECT_NAME)  # 静的ファイル�
 SESSION_COOKIE_AGE = 600  # 10分
 SESSION_SAVE_EVERY_REQUEST = True  # 1リクエストごとにセッション情報更新
 
+# LOGIN_REDIRECT_URL = '/' # ログイン時のリダイレクト先URL
 LOGOUT_REDIRECT_URL='/'  # ログアウト時のリダイレクト先URL
 SESSION_ENGINE = 'user_sessions.backends.db'  # セッション情報をDBに保存する設定
