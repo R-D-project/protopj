@@ -123,11 +123,12 @@ class ColorForm(forms.Form):
 
 
 class LoginForm(AuthenticationForm):
-    """ログインフォーム"""
+    '''ログインフォーム'''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
+            # 使用するclassを定義する。
             field.widget.attrs['class'] = 'form-control'
-            # placeholderにフィールドのラベルを入れる
+            # placeholder(入力欄に初期表示する内容)を定義する。
             field.widget.attrs['placeholder'] = field.label

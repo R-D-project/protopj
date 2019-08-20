@@ -30,7 +30,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # URLの指定なしの場合、searchapp内のurls.pyに指定されているURLの処理に移動する
     path('', include('searchapp.urls')),
-    path('accounts/', include('django.contrib.auth.urls')), #  ログイン用
 ]
 
 

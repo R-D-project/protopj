@@ -4,7 +4,7 @@
 {% block content %}
 {% load bootstrap4 %}
 
-<body class=" login">
+<body class="login">
 <div id="container">
   <div class="inner">
     <div id="header" class="mysystem-header">
@@ -12,7 +12,7 @@
     </div>
     <div id="content" class="colM">
       <div id="content-main">
-        <form method="post" action="{% url 'login' %}">
+        <form method="post" action="{% url 'searchapp:login' %}">
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
         <div class="form-group row px-3">

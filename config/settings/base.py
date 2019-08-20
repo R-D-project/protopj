@@ -8,6 +8,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from django.conf.global_settings import MESSAGE_STORAGE
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = プロジェクトのpath
@@ -193,3 +194,6 @@ SESSION_SAVE_EVERY_REQUEST = True  # 1リクエストごとにセッション情
 # LOGIN_REDIRECT_URL = '/' # ログイン時のリダイレクト先URL
 LOGOUT_REDIRECT_URL='/'  # ログアウト時のリダイレクト先URL
 SESSION_ENGINE = 'user_sessions.backends.db'  # セッション情報をDBに保存する設定
+
+# フラッシュメッセージの保存領域をセッションに変更
+MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'

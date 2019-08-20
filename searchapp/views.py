@@ -5,6 +5,7 @@ from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import LogoutView
+from django.contrib import messages
 from django.db.models import Q
 from django.views import generic
 from django.shortcuts import redirect
@@ -396,12 +397,19 @@ DETAILS_LISTVIEW = DetailsListView.as_view()
 
 
 class Login(LoginView):
-    """ログインページ"""
+    '''ログインページ'''
     form_class = LoginForm
     template_name = 'registration/login.html'
 
 
-class Logout(LoginRequiredMixin, LogoutView):
-    """ログアウトページ"""
-    # template_name = 'registration/login.html'
+class Logout(LogoutView):
+    '''ログアウト時の処理'''
 
+    def get_next_page(self):
+        '''
+        ログアウト後に遷移するページを設定するメソッド（親クラスのメソッドをオーバーライド）
+        子ではフラッシュメッセージに表示する文字列を定義している。
+        '''
+        message = 'ログアウトしました'
+        messages.info(self.request,message)
+        return super().get_next_page()

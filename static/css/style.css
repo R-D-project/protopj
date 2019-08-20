@@ -64,9 +64,6 @@ input.form-inline,input.form-control{
     height: 32px;
 }
 
-/*原さんのから持ってきた*/
-
-
 .login #container {
     width: 30em !important;
     min-width: 300px;
@@ -83,4 +80,12 @@ div#header {
 }
 div#content-main {
   padding: 20px;
+}
+
+.site-header{
+    display: flex;
+    padding: 10px 20px;
+    position: relative;
+    width: 100%;
+    text-align: right;
 }
