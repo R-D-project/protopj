@@ -8,7 +8,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-from django.conf.global_settings import MESSAGE_STORAGE
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = プロジェクトのpath
@@ -16,7 +15,10 @@ from django.conf.global_settings import MESSAGE_STORAGE
 
 # フォルダ階層を1つ落としたのでBASE_DIRの位置を1つ上にする
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
+
 PROJECT_NAME = os.path.basename(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
@@ -43,7 +45,7 @@ INSTALLED_APPS = [
     'searchapp.apps.SearchappConfig',  # アプリ紐付け
     'bootstrap4',  # bootstrap4紐付け
     'django.contrib.humanize',  # humanize紐付け(数値を3桁区切りにする際に使用する。)
-    'user_sessions', #usersessions紐付け
+    'user_sessions',  # usersessions紐付け
 ]
 
 # humanizeのappで指定可能。
@@ -191,8 +193,7 @@ STATIC_ROOT = '/var/www/{}/static' .format(PROJECT_NAME)  # 静的ファイル�
 SESSION_COOKIE_AGE = 600  # 10分
 SESSION_SAVE_EVERY_REQUEST = True  # 1リクエストごとにセッション情報更新
 
-# LOGIN_REDIRECT_URL = '/' # ログイン時のリダイレクト先URL
-LOGOUT_REDIRECT_URL='/'  # ログアウト時のリダイレクト先URL
+LOGOUT_REDIRECT_URL = '/'  # ログアウト時のリダイレクト先URL
 SESSION_ENGINE = 'user_sessions.backends.db'  # セッション情報をDBに保存する設定
 
 # フラッシュメッセージの保存領域をセッションに変更

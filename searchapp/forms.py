@@ -3,10 +3,10 @@
 
 '''
 from django import forms
-from .models import CategoryTBL
 from django.contrib.auth.forms import (
     AuthenticationForm
 )
+from .models import CategoryTBL
 
 
 # ModelChoiceField=プルダウンの選択肢をmodels.pyから参照するフォームの種類
@@ -15,7 +15,7 @@ class CategorySearchField(forms.ModelChoiceField):
     プルダウンフォームを表示するためのModelChoiceFormを継承したクラス
     label_from_instanceでプルダウンの値を上書きしている
     '''
-    #選択肢の表示をカスタマイズするメソッド
+    # 選択肢の表示をカスタマイズするメソッド
     def label_from_instance(self, obj=CategoryTBL):
         #  f"{}＝フォーマット文字列（{}内の文字をpythonの式として認識する）
         # obj.categoryname（カテゴリネーム）をmodelchoicefieldの値としてreturn
@@ -29,7 +29,7 @@ class CategorySearchForm(forms.Form):
     category_name = CategorySearchField(
         label='',
         required=False,  # 入力値の空白を許可
-        queryset=CategoryTBL.objects.all(), # クエリ発行結果をプルダウンの選択肢に設定
+        queryset=CategoryTBL.objects.all(),  # クエリ発行結果をプルダウンの選択肢に設定
         empty_label='カテゴリ',
     )
 

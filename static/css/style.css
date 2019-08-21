@@ -1,4 +1,4 @@
-.btn {
+/*.btn {
 	display: inline-block;
 	position: relative;
 	padding: 0.25em 0.5em;
@@ -14,7 +14,7 @@
 
 .btn:active {
 	box-shadow: 0 0 2px rgba(0, 0, 0, 0.30);
-}
+}*/
 
 .mar {
     /* position:ボックスの基準位置が相対位置か絶対位置かを指定する。
@@ -37,7 +37,9 @@ body {
 	width: 75%;
 	max-width:1080px;
 	position: relative;
-	background-color: #d7ffff;
+	/*background-color: #d7ffff;*/
+	background-color:#d8f2da;
+	color:#5a5158;
 }
 
 .table {
