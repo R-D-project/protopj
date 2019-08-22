@@ -42,10 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'searchapp.apps.SearchappConfig',  # アプリ紐付け
+    'searchapp.apps.SearchappConfig',  # 商品検索アプリ紐付け
     'bootstrap4',  # bootstrap4紐付け
     'django.contrib.humanize',  # humanize紐付け(数値を3桁区切りにする際に使用する。)
     'user_sessions',  # usersessions紐付け
+    'accounts.apps.AccountsConfig' #ユーザ認証機能用アプリの紐づけ
 ]
 
 # humanizeのappで指定可能。
@@ -196,5 +197,6 @@ SESSION_SAVE_EVERY_REQUEST = True  # 1リクエストごとにセッション情
 LOGOUT_REDIRECT_URL = '/'  # ログアウト時のリダイレクト先URL
 SESSION_ENGINE = 'user_sessions.backends.db'  # セッション情報をDBに保存する設定
 
-# フラッシュメッセージの保存領域をセッションに変更
+# フラッシュメッセージの保存領域
+# (Cookieに保存し、Cookieがいっぱいになったらsessionに保存するように定義する。)
 MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'

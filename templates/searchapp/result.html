@@ -1,7 +1,18 @@
 <!-- テンプレートの継承先 -->
-{% extends 'searchapp/base.html' %}
+{% extends 'base.html' %}
+
+{% block title %}検索結果{% endblock %}
+
+{% block header %}
+    {% include 'accounts/authheader.html' %}
+{% endblock %}
+
+{% block msg %}
+    {% include 'accounts/logoutmsg.html' %}
+{% endblock %}
+
 <!-- オーバーライド対象：content=子テンプレートのブロック名 -->
-{% block content %}
+{% block body %}
 <!-- humanizeの呼び出し -->
 {% load humanize %}
 <div class="container mar">

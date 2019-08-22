@@ -5,8 +5,8 @@ setting.pyのINSTALLED_APPに設定することで
 from django.apps import AppConfig
 
 
-class SearchappConfig(AppConfig):
+class AccountsConfig(AppConfig):
     '''
     アプリの設定を定義する。
     '''
-    name = 'searchapp'
+    name = 'accounts'

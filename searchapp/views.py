@@ -2,9 +2,6 @@
 searchappアプリのソースコードファイル
 '''
 from datetime import datetime
-from django.contrib.auth.views import LoginView
-from django.contrib.auth.views import LogoutView
-from django.contrib import messages
 from django.db.models import Q
 from django.views import generic
 from django.shortcuts import redirect
@@ -12,7 +9,6 @@ from .forms import CategorySearchForm
 from .forms import GoodsSearchForm
 from .forms import SizeForm
 from .forms import ColorForm
-from .forms import LoginForm
 from .models import GoodsTBL
 
 
@@ -400,22 +396,3 @@ class DetailsListView(generic.ListView):
 
 # クラス関数を、別のビュー関数からの呼び出し可能にするための定義
 DETAILS_LISTVIEW = DetailsListView.as_view()
-
-
-class Login(LoginView):
-    '''ログインページ'''
-    form_class = LoginForm
-    template_name = 'registration/login.html'
-
-
-class Logout(LogoutView):
-    '''ログアウト時の処理'''
-
-    def get_next_page(self):
-        '''
-        ログアウト後に遷移するページを設定するメソッド（親クラスのメソッドをオーバーライド）
-        子ではフラッシュメッセージに表示する文字列を定義している。
-        '''
-        message = 'ログアウトしました'
-        messages.info(self.request, message)
-        return super().get_next_page()

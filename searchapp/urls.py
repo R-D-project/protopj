@@ -18,8 +18,4 @@ urlpatterns = [
     path('result/', views.ResultList.as_view(), name='result'),
     # 'details/'を指定した場合にviewクラス(DetailsListView)を起動する。
     path('details/', views.DetailsListView.as_view(), name='details'),
-    # URLに'login/'を指定している場合、views.pyのLoginの処理を動かす
-    path('login/', views.Login.as_view(), name='login'),
-    # URLに'logout/'を指定している場合、views.pyのLogoutの処理を動かす
-    path('logout/', views.Logout.as_view(), name='logout'),
 ]

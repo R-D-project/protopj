@@ -1,7 +1,10 @@
 <!-- テンプレートの継承先 -->
-{% extends 'registration/base.html' %}
+{% extends 'base.html' %}
+
+{% block title %}ログインページ{% endblock %}
+
 <!-- オーバーライド対象：content=子テンプレートのブロック名 -->
-{% block content %}
+{% block body %}
 {% load bootstrap4 %}
 
 <body class="login">
@@ -12,7 +15,7 @@
     </div>
     <div id="content" class="colM">
       <div id="content-main">
-        <form method="post" action="{% url 'searchapp:login' %}">
+        <form method="post" action="{% url 'accounts:login' %}">
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
         <div class="form-group row px-3">
