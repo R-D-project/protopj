@@ -63,7 +63,7 @@ class IndexView(generic.ListView):
 
         # ①-4
         # 検索フォームの初期値を設定する処理
-        #category_name、search_charにそれぞれ空白の文字列を設定する
+        # category_name、search_charにそれぞれ空白の文字列を設定する
         category_name = ''
         search_char = ''
 
@@ -84,10 +84,9 @@ class IndexView(generic.ListView):
         # ①-7
         # ①-3で設定したcontextに①-6でフォームを格納した変数を格納
         # テンプレートにフォームを表示させる処理
-        #表示用フォームが格納されたリスト'search_value'をテンプレートに返す。
+        # 表示用フォームが格納されたリスト'search_value'をテンプレートに返す。
         context['search_value'] = [category_form, search_form]
         return context
-
 
 
 class ResultList(generic.ListView):
@@ -411,5 +410,5 @@ class Logout(LogoutView):
         子ではフラッシュメッセージに表示する文字列を定義している。
         '''
         message = 'ログアウトしました'
-        messages.info(self.request,message)
+        messages.info(self.request, message)
         return super().get_next_page()

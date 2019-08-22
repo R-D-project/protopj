@@ -8,7 +8,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-from django.conf.global_settings import MESSAGE_STORAGE
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = プロジェクトのpath
