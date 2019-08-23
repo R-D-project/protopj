@@ -40,6 +40,7 @@ div.title{
 /*result.html、details.htmlのテーブル全体の余白設定*/
 .table {
     margin-bottom: 5px;
+    background-color:rgba(255,255,255,0.7);
 }
 
 /*result.html、details.htmlのテーブル見出しの設定*/
@@ -48,13 +49,13 @@ table th {
     background-color: #777779;
     color:#ffffff;
     width:300px;
-    height:80px
 }
 
+
 /*result.html、details.htmlのテーブル見出し以外の設定*/
-table td{
-	background-color:#ffffff
-}
+/*table td{
+	background-color:#ffffff;
+}*/
 
 
 /*フォームの影の設定*/
@@ -71,6 +72,3 @@ input.form-inline,input.form-control{
     height: 38px;
     color:#715032;
 }
-
-
-

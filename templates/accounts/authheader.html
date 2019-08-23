@@ -8,13 +8,13 @@
             <!-- 判定：ユーザログイン時はログアウト機能を、ゲストログイン時はログイン機能を表示する -->
             <!-- user.is_authenticated:bool値 -->
             {% if user.is_authenticated %}
-                <div class="container">
+                <div class="loginout">
                     <!-- ログインしているユーザIDを表示する。 -->
                     <span>ようこそ {{ user.get_username }}様</span>
                     <a href="{% url 'accounts:logout' %}?next={{ request.path }}">ログアウト</a>
                 </div>
             {% else %}
-                <div class="container">
+                <div class="loginout">
                     <span>ようこそ ゲスト様</span>
                     <a href="{% url 'accounts:login' %}?next={{ request.path }}">ログイン</a>
                 </div>

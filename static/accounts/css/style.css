@@ -1,5 +1,5 @@
 /*ログインログアウト遷移部分設定*/
-div.container{
+div.loginout{
     margin: 0 0 0 auto;
     font-size:  x-large;
 }
@@ -40,7 +40,3 @@ div#content-main {
     text-align: right;
 }
 
-/*ログインボタン設定*/
-.button2{
-	background-color: #777779;
-}
