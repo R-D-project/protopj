@@ -8,7 +8,7 @@
 {% load bootstrap4 %}
 
 <body class="login">
-<div id="container">
+<div id="account">
   <div class="inner">
     <div id="header" class="mysystem-header">
               ログインしてください
@@ -19,7 +19,7 @@
         {% csrf_token %}
         {% bootstrap_form form layout='horizontal' %}
         <div class="form-group row px-3">
-          <input type="submit" class="btn btn-primary btn-block" value="ログイン" />
+          <input type="submit" class="btn btn-secondary btn-block" value="ログイン" />
         </div>
         <input type="hidden" name="next" value="{{ next }}" />
         </form>
@@ -27,6 +27,6 @@
       <br class="clear" />
     </div>  <!-- content -->
   </div>  <!-- inner -->
-</div>  <!-- END Container -->
+</div>  <!-- END account -->
 </body>
 {% endblock %}

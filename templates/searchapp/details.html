@@ -21,7 +21,8 @@
     <!-- 詳細ページが存在する場合 -->
     {% else %}
 	<table class="bg-white table table-bordered">
-		<thead class="thead-dark">
+		<!--  <thead class="thead-dark">-->
+		<thead>
 			{% for form in goods_details %}
 			{% if forloop.first %}
 			<tr>

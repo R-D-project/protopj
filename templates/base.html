@@ -8,8 +8,10 @@
         {% load bootstrap4 %}
         {% bootstrap_css %}
         {% bootstrap_javascript jquery='full' %}
+        <link rel="stylesheet" href="{% static 'base/css/style.css' %}" type="text/css"/>
         <link rel="stylesheet" href="{% static 'accounts/css/style.css' %}" type="text/css"/>
         <link rel="stylesheet" href="{% static 'searchapp/css/style.css' %}" type="text/css"/>
+        <link rel="icon" href="/static/base/images/favicon.png">
         <script type="text/javascript" src="{% static 'searchapp/js/searchapp.js' %}"></script>
         <title>{% block title %}ECサイト{% endblock %}</title>
     </head>

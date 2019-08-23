@@ -16,13 +16,17 @@
 <form method="post">
 <!-- セキュリティ対策 -->
 {% csrf_token %}
+<!-- チームロゴ配置 -->
+<div class="title">
+RD-project
+</div>
 <div style="display:inline-flex" class="mar">
     <!-- search_value＝カテゴリプルダウンフォームとフリーワードフォームを格納した変数 -->
       {% for search_form in search_value %}
      {{ search_form }}
      {% endfor %}
      <!--  <button type="submit" name="button1" class="btn col-md-1">&#x1F50D;</button>-->
-     <button type="submit" name="button1" class="btn btn-success col-md-1">&#x1F50D;</button>
+     <input type="submit" value="" class="button1" >
 </div>
 </form>
 {% endblock %}

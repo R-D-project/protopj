@@ -1,59 +1,63 @@
-/*.btn {
-	display: inline-block;
-	position: relative;
-	padding: 0.25em 0.5em;
-	text-decoration: none;
-	color: #000000;
-	background: #fd9535;
-	border-radius: 4px;
-	box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 0
-		rgba(0, 0, 0, 0.05);
-	font-weight: bold;
-	border: solid 2px #d27d00;
+/*検索ボタンの設定*/
+.button1{
+    border: 0px;
+    width:38px;
+    height:38px;
+    background:
+    url("/static/searchapp/images/search.png");
+    background-size: cover;
 }
 
-.btn:active {
-	box-shadow: 0 0 2px rgba(0, 0, 0, 0.30);
-}*/
-
-.mar {
-    /* position:ボックスの基準位置が相対位置か絶対位置かを指定する。
-       static:配置方法指定なし。
-       relative:相対配置。
-       absolute:絶対配置。親ボックスにstatic以外が指定されている場合は親ボックスの左上が基準位置となる。
-       fixed:絶対位置(absoluteと同じ)。スクロールしても位置が固定されたまま。
-    */
-	position:absolute;
-    /* 余白の設定(上下30px、左右20%) */
-    margin: 30px 30%;
-    /* top: 50%;
+/*index.html、details.htmlの位置設定*/
+div.mar{
+    position: absolute;
+    top: 50%;
     left: 50%;
-    tranform: translate(-50%,-50%); */
+    transform: translate(-50%, -50%);
 }
 
-body {
-	font-family: "Meiryo";
-	font-size: medium;
-	width: 75%;
-	max-width:1080px;
-	position: relative;
-	/*background-color: #d7ffff;*/
-	background-color:#d8f2da;
-	color:#5a5158;
+/*result.htmlの位置設定*/
+div.result{
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /*text-align: center;*/
 }
 
+/*index.html「RD-project」の位置設定*/
+div.title{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color:#ffffff;
+    font-size: 120px;
+    font-family: 'Amatic SC', cursive;
+}
+
+/*result.html、details.htmlのテーブル全体の余白設定*/
 .table {
-	margin-bottom: 5px;
-}
-
-table th {
-	text-align:center;
-}
-
-h1 {
     margin-bottom: 5px;
 }
 
+/*result.html、details.htmlのテーブル見出しの設定*/
+table th {
+    text-align:center;
+    background-color: #777779;
+    color:#ffffff;
+    width:300px;
+    height:80px
+}
+
+/*result.html、details.htmlのテーブル見出し以外の設定*/
+table td{
+	background-color:#ffffff
+}
+
+
+/*フォームの影の設定*/
 input.form-inline,input.form-control{
     width: 250px;
     box-shadow:0px 0px 5px 3px rgba(68, 68, 68, 0.2) inset;
@@ -61,33 +65,12 @@ input.form-inline,input.form-control{
     position:relative
 }
 
+/*カテゴリプルダウンのサイズ設定*/
 #id_category_name {
     width: 280px;
-    height: 32px;
+    height: 38px;
+    color:#715032;
 }
 
-.login #container {
-    width: 30em !important;
-    min-width: 300px;
-    margin: 100px auto;
-    border-style: solid;
-    border-color: #3333FF;
-    background-color: #ffffff;
-}
-div.form-group {
-  padding-top: 20px;
-}
-div#header {
-  padding: 10px;
-}
-div#content-main {
-  padding: 20px;
-}
 
-.site-header{
-    display: flex;
-    padding: 10px 20px;
-    position: relative;
-    width: 100%;
-    text-align: right;
-}
+

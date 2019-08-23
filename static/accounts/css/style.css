@@ -1,4 +1,46 @@
+/*ログインログアウト遷移部分設定*/
+div.container{
+    margin: 0 0 0 auto;
+    font-size:  x-large;
+}
 
-h1 {
-    margin-bottom: 5px;
+/*login.htmlのボックス設定*/
+.login #account {
+    width: 30em !important;
+    min-width: 300px;
+    margin:auto;
+    margin-top:5%;
+    border-style: solid;
+    border-color:rgba(255,255,255,0.7);
+    background-color:rgba(255,255,255,0.4);
+}
+
+/*ボックス内部パーツ（フォーム、ボタン）の余白設定*/
+div.form-group {
+  padding-top: 20px;
+}
+
+/*ボックス上部ヘッダーの設定*/
+div#header {
+  padding: 10px;
+  background-color:rgba(255,255,255,0.7);
+}
+
+/*ボックス内部パーツ（フォーム、ボタン）の余白設定*/
+div#content-main {
+  padding: 20px;
+}
+
+/*ログイン・ログアウト遷移リンクの位置設定*/
+.site-header{
+    display: flex;
+    padding: 10px 20px;
+    position: relative;
+    width: 100%;
+    text-align: right;
+}
+
+/*ログインボタン設定*/
+.button2{
+	background-color: #777779;
 }

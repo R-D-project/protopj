@@ -12,6 +12,7 @@ class Login(LoginView):
     form_class = LoginForm
     template_name = 'accounts/login.html'
 
+
 class Logout(LogoutView):
     '''ログアウト時の処理'''
 
