@@ -13,7 +13,8 @@
 
 <!-- オーバーライド対象：content=子テンプレートのブロック名 -->
 {% block body %}
-<form method="post">
+<!-- bootstrapでformの表示を定義 -->
+<form method="post" class="form-inline">
 <!-- セキュリティ対策 -->
 {% csrf_token %}
 <!-- チームロゴ配置 -->
@@ -25,7 +26,6 @@ RD-project
       {% for search_form in search_value %}
      {{ search_form }}
      {% endfor %}
-     <!--  <button type="submit" name="button1" class="btn col-md-1">&#x1F50D;</button>-->
      <input type="submit" value="" class="button1" >
 </div>
 </form>

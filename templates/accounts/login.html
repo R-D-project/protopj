@@ -16,10 +16,13 @@
     <div id="content" class="colM">
       <div id="content-main">
         <form method="post" action="{% url 'accounts:login' %}">
+        <!-- セキュリティ対策 -->
         {% csrf_token %}
+        <!-- bootstrapでフォームの表示を定義 -->
         {% bootstrap_form form layout='horizontal' %}
         <div class="form-group row px-3">
-          <input type="submit" class="btn btn-secondary btn-block" value="ログイン" />
+        <!-- bootstrapでボタンの表示を定義 -->
+          <input type="submit" class="btn btn-secondary btn-block" value="ログイン"     />
         </div>
         <input type="hidden" name="next" value="{{ next }}" />
         </form>
