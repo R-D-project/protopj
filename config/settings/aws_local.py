@@ -12,7 +12,7 @@ from .base import *
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = FalseS  # 開発時はTrue,商用提供時はFalse
+DEBUG = False  # 開発時はTrue,商用提供時はFalse
 
 ALLOWED_HOSTS = ['*']  # デバックモードがFalseの時に設定要
 
