@@ -1,0 +1,31 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- bootstrap4の呼び出し -->
+        {% load bootstrap4 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript jquery='full' %}
+        <link rel="stylesheet" href="{% static 'base/css/style_base.css' %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'accounts/css/style_accounts.css' %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'searchapp/css/style_searchapp.css' %}" type="text/css"/>
+        <link rel="icon" href="/static/base/images/favicon.png">
+        <script type="text/javascript" src="{% static 'searchapp/js/searchapp.js' %}"></script>
+        <title>{% block title %}ECサイト{% endblock %}</title>
+    </head>
+
+    <!-- ヘッダー部の設定をオーバーライド -->
+    {% block header %}
+    {% endblock %}
+
+    <!-- メッセージ表示部をオーバーライド -->
+    {% block msg %}
+    {% endblock %}
+
+    <!-- メイン部をオーバーライド -->
+    {% block body %}
+    {% endblock %}
+    </body>
+</html>

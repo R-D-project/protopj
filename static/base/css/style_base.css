@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC&display=swap');
+
+/*html全体の高さ表示設定*/
+html{
+    height: 100%;
+}
+
+/*全体設定*/
+body {
+    font-family: "CicaTest"; /*フォントデザイン設定*/
+    font-size: medium; /*フォントのサイズ設定*/
+    background: linear-gradient(45deg, rgba(255, 0, 161, .4), rgba(246, 255, 0, .4)), /*グラデーション設定*/
+    url("/static/base/images/bg.jpg"); /*背景画像をpath指定*/
+    background-size: cover; /*背景範囲をすべて覆う*/
+}
+
+
+/*見出し１の下側余白設定*/
+h1 {
+    margin-bottom: 5px;
+}

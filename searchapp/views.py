@@ -58,7 +58,7 @@ class IndexView(generic.ListView):
 
         # ①-4
         # 検索フォームの初期値を設定する処理
-        #category_name、search_charにそれぞれ空白の文字列を設定する
+        # category_name、search_charにそれぞれ空白の文字列を設定する
         category_name = ''
         search_char = ''
 
@@ -79,10 +79,9 @@ class IndexView(generic.ListView):
         # ①-7
         # ①-3で設定したcontextに①-6でフォームを格納した変数を格納
         # テンプレートにフォームを表示させる処理
-        #表示用フォームが格納されたリスト'search_value'をテンプレートに返す。
+        # 表示用フォームが格納されたリスト'search_value'をテンプレートに返す。
         context['search_value'] = [category_form, search_form]
         return context
-
 
 
 class ResultList(generic.ListView):
@@ -111,10 +110,10 @@ class ResultList(generic.ListView):
         return redirect('searchapp:details')
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        """
+        条件に合った商品を一覧で表示するメソッド
+        """
         context = super().get_context_data(**kwargs)
-        '''
-         条件に合った商品を一覧で表示するメソッド
-        '''
         # 1-1
         # セッションの中にユーザの入力値が入っているかどうかの判定
         # ↑（検索押した後に動いているので基本的にはなにかしら入ってる：Nullではない）
@@ -147,37 +146,47 @@ class ResultList(generic.ListView):
         # 分岐先で指定のクエリセットを発行し、変数goods_search_resultの中に格納する
         if form_value[0] == '':
             if form_value[1] == '':
-                # カテゴリ×文字×
+                # カテゴリ×文字×の時
                 # (全ての商品データを取得)
-                goods_search_result = GoodsTBL.objects\
-                .filter(exact_ronsaku& lte_salesstartdate\
-                & (gt_salesenddate | exact_salesenddate))\
-                .order_by('-salesstartdate')
+                goods_search_result = GoodsTBL.objects.filter(
+                    exact_ronsaku & lte_salesstartdate & (
+                        gt_salesenddate | exact_salesenddate
+                    )
+                ).order_by('-salesstartdate')
             else:
                 # カテゴリ×文字〇の時
                 # (入力文字を値に含む商品データを取得)
-                goods_search_result = GoodsTBL.objects.select_related()\
-                .filter(exact_ronsaku\
-                & (contains_name | contains_color | contains_price | contains_size)\
-                & lte_salesstartdate& (gt_salesenddate | exact_salesenddate))\
-                .order_by('-salesstartdate')
+                goods_search_result = GoodsTBL.objects.select_related().filter(
+                    exact_ronsaku & (
+                        contains_name | contains_color
+                        | contains_price | contains_size
+                    )
+                    & lte_salesstartdate & (
+                        gt_salesenddate | exact_salesenddate
+                    )
+                ).order_by('-salesstartdate')
         else:
             if form_value[1] == '':
                 # カテゴリ〇文字×の時
                 # (選択したカテゴリと同じカテゴリに設定した商品データを取得)
-                goods_search_result = GoodsTBL.objects.select_related()\
-                .filter(exact_cate, exact_ronsaku & lte_salesstartdate\
-                & (gt_salesenddate | exact_salesenddate))\
-                .order_by('-salesstartdate')
+                goods_search_result = GoodsTBL.objects.select_related().filter(
+                    exact_cate, exact_ronsaku & lte_salesstartdate & (
+                        gt_salesenddate | exact_salesenddate
+                    )
+                ).order_by('-salesstartdate')
             else:
                 # カテゴリ〇文字〇の時
                 # (選択したカテゴリと同じカテゴリに設定した商品データのなかで、
                 # かつ入力した文字を含む商品データを取得)
-                goods_search_result = GoodsTBL.objects.select_related()\
-                .filter(exact_cate, exact_ronsaku\
-                & (contains_name | contains_color | contains_price | contains_size)\
-                & lte_salesstartdate & (gt_salesenddate | exact_salesenddate))\
-                .order_by('-salesstartdate')
+                goods_search_result = GoodsTBL.objects.select_related().filter(
+                    exact_cate, exact_ronsaku & (
+                        contains_name | contains_color
+                        | contains_price | contains_size
+                    )
+                    & lte_salesstartdate & (
+                        gt_salesenddate | exact_salesenddate
+                    )
+                ).order_by('-salesstartdate')
 
             # 1-4
             # 1-3で作成された検索結果goods_search_resultをfor文で回し、
@@ -282,7 +291,6 @@ class DetailsListView(generic.ListView):
         size = self.request.session.get('size', '0')
         color = self.request.session.get('color', '0')
 
-
         # Qオブジェクトを各変数に初期化
         exact_productno = Q()  # 製造番号が
         exact_deleteflag = Q()  # 論理削除フラグ(完全一致)
@@ -308,7 +316,7 @@ class DetailsListView(generic.ListView):
         # TBLの色名がプルダウンで指定したサイズ名と完全一致
         exact_colorname = Q(colorname__exact=str(color))
 
-        '''  start サイズと色のプルダウンの値と初期位置を設定する処理  '''
+        #  start サイズと色のプルダウンの値と初期位置を設定する処理
         # Qオブジェクトで定義した検索条件でクエリを発行する。
         szdist = GoodsTBL.objects.select_related().filter(
             exact_productno & exact_deleteflag & lte_salesstartdate
@@ -357,9 +365,9 @@ class DetailsListView(generic.ListView):
         # contextにsz_formとcl_formと入れる
         context['size_form'] = sz_form
         context['color_form'] = cl_form
-        '''  end サイズと色のプルダウンの値と初期位置を設定する処理  '''
+        #  end サイズと色のプルダウンの値と初期位置を設定する処理
 
-        '''  start 対象商品(サイズ&色指定)の在庫数判定処理  '''
+        #  start 対象商品(サイズ&色指定)の在庫数判定処理
         # 条件に当てはまる数を確認(1件あるかないか)
         zaiko = GoodsTBL.objects.select_related().filter(
             exact_sizename & exact_colorname & exact_productno
@@ -379,10 +387,9 @@ class DetailsListView(generic.ListView):
             else:
                 zaiko_judg = '在庫あり'
 
-
         # テンプレートで使用する変数'zaiko_form'に在庫有無の結果を代入する
         context['zaiko_form'] = zaiko_judg
-        '''  end 対象商品(サイズ&色指定)の在庫数判定処理  '''
+        #  end 対象商品(サイズ&色指定)の在庫数判定処理
         # 戻り値としてcontextを返す。
         return context
 

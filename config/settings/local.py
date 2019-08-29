@@ -69,7 +69,7 @@ NOSE_ARGS = [
     '--with-coverage',  # coverage を取る
     '--cover-html',  # coverage を html で cover/ に出力する
     # coverage を取得する対象アプリ名を定義する。
-    '--cover-package=searchapp',
+    '--cover-package=searchapp,accounts',
 ]
 
 if DEBUG:

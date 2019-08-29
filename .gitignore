@@ -1,9 +1,12 @@
 *.pyc
 *~
-__pycache__
+__pycache__/
+
 db.sqlite3
 .DS_Store
 /.metadata/
 RemoteSystemsTempFiles
 .project
 .pydevproject
+
+cover/

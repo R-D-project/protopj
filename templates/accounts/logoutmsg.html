@@ -1,0 +1,18 @@
+<!-- テンプレートの継承先 -->
+{% extends 'base.html' %}
+<!-- オーバーライド対象：content=子テンプレートのブロック名 -->
+{% block msg %}
+
+{% if messages %}
+    <!-- bootstrapでポップアップの表示を定義 -->
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    {% for message in messages %}
+        <p> {{ message }}</p>
+    {% endfor %}
+    </div>
+{% endif %}
+
+{% endblock %}

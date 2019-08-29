@@ -1,0 +1,35 @@
+<!-- テンプレートの継承先 -->
+{% extends 'base.html' %}
+
+{% block title %}ログインページ{% endblock %}
+
+<!-- オーバーライド対象：content=子テンプレートのブロック名 -->
+{% block body %}
+{% load bootstrap4 %}
+
+<body class="login">
+<div id="account">
+  <div class="inner">
+    <div id="header" class="mysystem-header">
+              ログインしてください
+    </div>
+    <div id="content" class="colM">
+      <div id="content-main">
+        <form method="post" action="{% url 'accounts:login' %}">
+        <!-- セキュリティ対策 -->
+        {% csrf_token %}
+        <!-- bootstrapでフォームの表示を定義 -->
+        {% bootstrap_form form layout='horizontal' %}
+        <div class="form-group row px-3">
+        <!-- bootstrapでボタンの表示を定義 -->
+          <input type="submit" class="btn btn-secondary btn-block" value="ログイン"     />
+        </div>
+        <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+      </div>  <!-- content-main -->
+      <br class="clear" />
+    </div>  <!-- content -->
+  </div>  <!-- inner -->
+</div>  <!-- END account -->
+</body>
+{% endblock %}
