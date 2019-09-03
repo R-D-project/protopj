@@ -1,32 +1,46 @@
-{% extends 'searchapp/base.html' %} {% block content %}
+<!-- テンプレートの継承先 -->
+{% extends 'base.html' %}
+
+{% block title %}商品詳細{% endblock %}
+
+{% block header %}
+    {% include 'accounts/authheader.html' %}
+{% endblock %}
+
+{% block msg %}
+    {% include 'accounts/logoutmsg.html' %}
+{% endblock %}
+
+{% block body %}
 <!-- humanizeの呼び出し -->
 {% load humanize %}
-<div class="container mar">
+<div class="container goodsdetail">
 	{% if goods_details|length == 0 %}
 	   <!-- 詳細ページが存在しない場合(商品情報削除と詳細ページ表示が同タイミングで発生) -->
 	   <p>検索結果が存在しません。</p>
     <!-- 詳細ページが存在する場合 -->
     {% else %}
+    <!-- bootstrapでテーブルの表示を定義 -->
 	<table class="bg-white table table-bordered">
-		<thead class="thead-dark">
+		<thead>
 			{% for form in goods_details %}
 			{% if forloop.first %}
 			<tr>
-				<th>上位カテゴリ名</th>
-				<td>{{ form.categoryid.highcategoryid.highcategoryname }}</td>
+				<th><label for="hcate">上位カテゴリ名</label></th>
+				<td id="hcate">{{ form.categoryid.highcategoryid.highcategoryname }}</td>
 			</tr>
 			<tr>
-				<th>カテゴリ名</th>
-				<td>{{ form.categoryid.categoryname }}</td>
+				<th><label for="cate">カテゴリ名</th></label>
+				<td id="cate">{{ form.categoryid.categoryname }}</td>
 			</tr>
 			<tr>
-				<th>商品名</th>
+				<th><label for="goodsname">商品名</th></label>
 				<td id="goodsname">{{ form.goodsname }}</td>
 			</tr>
 			<tr>
-				<th>価格（￥）※税抜き</th>
+				<th><label for="price">価格（￥）※税抜き</th></label>
 				<!-- intcomma(数値3桁区切りで','を打つ) -->
-				<td align="right">{{ form.price| intcomma }}</td>
+				<td id="price" align="right">{{ form.price| intcomma }}</td>
 			</tr>
 			{% endif %}
 			{% endfor %}
@@ -35,7 +49,7 @@
 				{{ color_form }}
 			</form>
 			<tr>
-				<th>在庫有無</th>
+				<th><label>在庫有無</label></th>
 				<td id="zaiko">
 				{% if zaiko_form|length == 0 %}
 				-

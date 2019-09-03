@@ -105,7 +105,7 @@ class GoodsTBL(models.Model):
     # 管理サイトに表示させる文字列を定義
     def __str__(self):
         # adminページで表示するときの文字列を返す。
-        return '[' + self.goodsid + ']' +self.goodsname
+        return '[' + self.goodsid + ']' + self.goodsname
 
 
 class CategoryTBL(models.Model):
@@ -166,4 +166,4 @@ class HighCategoryTBL(models.Model):
     # 管理サイトに表示させる文字列を定義
     def __str__(self):
         # adminページで表示するときの文字列を返す。
-        return '[' + self.highcategoryid + ']' +self.highcategoryname
+        return '[' + self.highcategoryid + ']' + self.highcategoryname

@@ -1,0 +1,80 @@
+/*検索ボタンの設定*/
+.button1{
+    border: 0px;
+    width:38px;
+    height:38px;
+    background:
+    url("/static/searchapp/images/search.png");
+    background-size: cover;
+}
+
+/*index.html、details.htmlの要素のセンタリング設定*/
+div.mar{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/*result.htmlの位置設定*/
+div.result{
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /*text-align: center;*/
+}
+
+/*index.html「RD-project」の位置設定*/
+div.title{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color:#ffffff;
+    font-size: 120px;
+    font-family: 'Amatic SC', cursive;
+}
+
+/*result.html、details.htmlのテーブル全体の余白設定*/
+.table {
+    margin-bottom: 5px;
+    background-color:rgba(255,255,255,0.7);
+}
+
+/*result.html、details.htmlのテーブルヘッダーの設定*/
+table th {
+    text-align:center;
+    background-color: #777779;
+    color:#ffffff;
+    width:300px;
+}
+
+
+/*result.html、details.htmlのテーブルデータ部分の設定*/
+table td{
+    background-color:#ffffff;
+    color:#000000
+}
+
+
+/*入力フォーム(検索画面とログイン画面)の設定*/
+input.form-inline,input.form-control{
+    width: 250px;
+    box-shadow:0px 0px 5px 3px rgba(68, 68, 68, 0.2) inset;
+    border:1px solid #000;
+    position:relative
+}
+
+/*カテゴリプルダウンのサイズ設定*/
+#id_category_name {
+    width: 280px;
+    height: 38px;
+    color:#715032;
+}
+
+div.indexmenu{
+  display: flex;
+  flex-direction: column;
+}

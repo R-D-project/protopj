@@ -1,16 +1,32 @@
 <!-- テンプレートの継承先 -->
-{% extends 'searchapp/base.html' %}
+{% extends 'base.html' %}
+
+{% block title %}商品検索{% endblock %}
+
+{% block header %}
+    {% include 'accounts/authheader.html' %}
+{% endblock %}
+
+{% block msg %}
+    {% include 'accounts/logoutmsg.html' %}
+{% endblock %}
+
 <!-- オーバーライド対象：content=子テンプレートのブロック名 -->
-{% block content %}
-<form method="post">
+{% block body %}
+<!-- bootstrapでformの表示を定義 -->
+<form method="post" class="form-inline">
 <!-- セキュリティ対策 -->
 {% csrf_token %}
+<!-- チームロゴ配置 -->
+<div class="title">
+RD-project
+</div>
 <div style="display:inline-flex" class="mar">
     <!-- search_value＝カテゴリプルダウンフォームとフリーワードフォームを格納した変数 -->
       {% for search_form in search_value %}
      {{ search_form }}
      {% endfor %}
-     <button type="submit" name="button1" class="btn col-md-1">&#x1F50D;</button>
+     <input type="submit" value="" class="button1" >
 </div>
 </form>
 {% endblock %}

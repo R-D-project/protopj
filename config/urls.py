@@ -1,5 +1,5 @@
-"""config URL Configuration
 
+"""config URL Configuration
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
 Examples:
@@ -28,10 +28,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # URLの指定なしの場合、searchapp内のurls.pyに指定されているURLの処理に移動する
     path('', include('searchapp.urls')),
+    path('accounts/',include('accounts.urls')),
 ]
 
 
 if local.DEBUG:
     import debug_toolbar
 
-    urlpatterns = [path('__debug__/', include(debug_toolbar.urls))] + urlpatterns
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls))
+    ] + urlpatterns
