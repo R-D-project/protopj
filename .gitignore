@@ -9,4 +9,4 @@ RemoteSystemsTempFiles
 .project
 .pydevproject
 
-cover/
+/cover/

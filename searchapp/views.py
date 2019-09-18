@@ -10,7 +10,16 @@ from .forms import GoodsSearchForm
 from .forms import SizeForm
 from .forms import ColorForm
 from .models import GoodsTBL
+from django.template.context_processors import request
 
+class TopView(generic.TemplateView):
+     template_name = 'top.html'
+
+     def welcom(self):
+         """
+         topを表示する
+         """
+         return render(request,'top.html')
 
 class IndexView(generic.ListView):
     '''

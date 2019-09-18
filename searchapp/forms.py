@@ -13,6 +13,7 @@ class CategorySearchField(forms.ModelChoiceField):
     label_from_instanceでプルダウンの値を上書きしている
     '''
     # 選択肢の表示をカスタマイズするメソッド
+
     def label_from_instance(self, obj=CategoryTBL):
         #  f"{}＝フォーマット文字列（{}内の文字をpythonの式として認識する）
         # obj.categoryname（カテゴリネーム）をmodelchoicefieldの値としてreturn

@@ -78,3 +78,10 @@ div.indexmenu{
   display: flex;
   flex-direction: column;
 }
+
+/*Pタグ(検索結果が存在しませんの文字)の設定*/
+p{
+	color:#000000;
+    font-size: 40px;
+    background-color:rgba(255,255,255,0.7);
+}
