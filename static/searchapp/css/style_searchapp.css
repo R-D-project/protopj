@@ -13,7 +13,7 @@ div.mar{
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0%);
 }
 
 /*result.htmlの位置設定*/
@@ -21,7 +21,7 @@ div.result{
     position: absolute;
     top: 20%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0%);
     /*text-align: center;*/
 }
 
