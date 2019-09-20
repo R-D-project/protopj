@@ -1,23 +1,20 @@
 <!-- テンプレートの継承先 -->
-{% extends 'base.html' %}
+<!-- {% extends 'base.html' %} -->
 <!-- オーバーライド対象：content=子テンプレートのブロック名 -->
 {% block header %}
 {% load bootstrap4 %}
 
 <header class="site-header">
-            <!-- 判定：ユーザログイン時はログアウト機能を、ゲストログイン時はログイン機能を表示する -->
-            <!-- user.is_authenticated:bool値 -->
-            {% if user.is_authenticated %}
-                <div class="loginout">
-                    <!-- ログインしているユーザIDを表示する。 -->
-                    <span>ようこそ {{ user.get_username }}様</span>
-                    <a href="{% url 'accounts:logout' %}?next={{ request.path }}">ログアウト</a>
-                </div>
-            {% else %}
-                <div class="loginout">
-                    <span>ようこそ ゲスト様</span>
-                    <a href="{% url 'accounts:login' %}?next={{ request.path }}">ログイン</a>
-                </div>
-            {% endif %}
-        </header>
+    {% if user.is_authenticated %}
+        <div class="userlavel">ようこそ {{ user.get_username }}様</div>
+        <div class="loginoutlink">
+            <a href="{% url 'accounts:logout' %}?next={{ request.path }}">ログアウト</a>
+        </div>
+    {% else %}
+        <div class="userlavel">ようこそ ゲスト様</div>
+        <div class="loginoutlink">
+            <a href="{% url 'accounts:login' %}?next={{ request.path }}">ログイン</a>
+        </div>
+    {% endif %}
+</header>
 {% endblock %}

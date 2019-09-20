@@ -44,6 +44,18 @@ div.title{
     font-family: 'Amatic SC', cursive;
 }
 
+div.titlelink{
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    text-align: center;
+    color:#ffffff;
+    font-size: 120px;
+    font-family: 'Amatic SC', cursive;
+    cursor: pointer;
+}
+
 /*result.html、details.htmlのテーブル全体の余白設定*/
 .table {
     margin-bottom: 5px;
@@ -87,8 +99,21 @@ div.indexmenu{
 }
 
 /*Pタグ(検索結果が存在しませんの文字)の設定*/
-p{
+.noexistmsg{
 	color:#000000;
     font-size: 40px;
     background-color:rgba(255,255,255,0.7);
+}
+
+#tlink {
+ text-decoration: none; /* リンクの下線を出さない */
+}
+#tlink:link {
+ color: #ffffff; /* 色の指定をリセット */
+}
+#tlink:visited {
+ color: #ffffff; /* 色の指定をリセット */
+}
+#tlink:hover {
+ color: #ffffff; /* 色の指定をリセット */
 }

@@ -14,10 +14,19 @@
 {% block body %}
 <!-- humanizeの呼び出し -->
 {% load humanize %}
+
+<div class="titlelink">
+    <form method="post">{% csrf_token %}
+    <a id="tlink" href="{% url 'searchapp:index' %}">RD-project</a>
+    </form>
+</div>
+
 <div class="container details">
 	{% if goods_details|length == 0 %}
-	   <!-- 詳細ページが存在しない場合(商品情報削除と詳細ページ表示が同タイミングで発生) -->
-	   <p>検索結果が存在しません。</p>
+	    <!-- 詳細ページが存在しない場合(商品情報削除と詳細ページ表示が同タイミングで発生) -->
+        <div class="noexistmsg">
+            <p>検索結果が存在しません。</p>
+        </div>
     <!-- 詳細ページが存在する場合 -->
     {% else %}
     <!-- bootstrapでテーブルの表示を定義 -->

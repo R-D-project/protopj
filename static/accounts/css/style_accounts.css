@@ -2,6 +2,7 @@
 div.loginout{
     margin: 0 0 0 auto;
     font-size:  x-large;
+    text-align: right;
 }
 
 /*login.htmlのボックス設定*/
@@ -34,9 +35,22 @@ div#content-main {
 /*ログイン・ログアウト遷移リンクの位置設定*/
 .site-header{
     display: flex;
-    padding: 10px 20px;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+
     position: relative;
     width: 100%;
-    text-align: right;
+    height: 50px;
+    padding: 10px 20px;
+}
+.userlavel{
+	padding: 0px 10px;
+    font-size:  x-large;
+    text-align: center;
+}
+.loginoutlink{
+    padding: 0px 10px;
+    font-size:  x-large;
+    text-align: center;
 }
 

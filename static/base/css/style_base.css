@@ -12,6 +12,7 @@ body {
     background: linear-gradient(45deg, rgba(255, 0, 161, .4), rgba(246, 255, 0, .4)), /*グラデーション設定*/
     url("/static/base/images/bg.jpg"); /*背景画像をpath指定*/
     background-size: cover; /*背景範囲をすべて覆う*/
+    background-attachment:fixed; /*背景画像を固定*/
 }
 
 
@@ -19,7 +20,6 @@ body {
 h1 {
     margin-bottom: 5px;
 }
-
 
 div.topBG {
   width: 100vw;
@@ -30,7 +30,6 @@ div.topBG {
   align-items: center;
   justify-content: center;
 }
-
 
 /*Topのロゴの場所設定*/
 div.toplogo{
