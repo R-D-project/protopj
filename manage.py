@@ -7,8 +7,8 @@ if __name__ == '__main__':
     # 動作環境に合わせて有効化（コメント解除）する。
     # local：ローカル端末で直接動かす場合の設定ファイル
     # aws_local：AWS上で動かす場合の設定ファイル
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.local')
-    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.aws_local')
+    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.local')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.aws_local')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
